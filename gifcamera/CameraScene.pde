@@ -23,7 +23,6 @@ class CameraScene extends Scene {
     video = new Capture(applet, CAPTURE_WIDTH, CAPTURE_HEIGHT, CAPTURE_RATE);
     opencv = new OpenCV(applet, CAPTURE_WIDTH, CAPTURE_HEIGHT);
     opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE);
-    FaceGifGenerator.setOpenCV(opencv);
   }
 
   void onActivate() {
@@ -98,8 +97,7 @@ class CameraScene extends Scene {
         RecordingScene recording = (RecordingScene)currentScene;
         switchState(CameraStateEnum.DISPLAY);
         DisplayScene display = (DisplayScene)currentScene;
-        GifMaker gf = new GifMaker(parent, gifToStore());
-        display.processFrames(recording.getFrames(), gf);
+        display.processFrames(recording.getFrames(), parent, gifToStore());
         break;
       case DISPLAY:
         break;
@@ -123,10 +121,17 @@ class CameraScene extends Scene {
     protected Capture capture;
     protected OpenCV opencv;
     private CameraSceneResult result = CameraSceneResult.NOT_FINISHED;
+    protected PApplet parent;
 
     CameraStateScene(Capture c, OpenCV ocv) {
       capture = c;
       opencv = ocv;
+    }
+    
+    CameraStateScene(Capture c, OpenCV ocv, PApplet applet) {
+      capture = c;
+      opencv = ocv;
+      parent = applet;
     }
 
     public CameraSceneResult getResult() {
@@ -256,7 +261,7 @@ class CameraScene extends Scene {
     final float FADE_DELAY = 600;
     int countdown = 3;
     long lastCapture = 0;
-    ArrayList<Capture> frames = new ArrayList<Capture>();
+    ArrayList<PImage> frames = new ArrayList<PImage>();
 
     RecordingScene(Capture c, OpenCV ocv) {
       super(c, ocv);
@@ -267,7 +272,7 @@ class CameraScene extends Scene {
       frames.add(c);
     }
     
-    ArrayList<Capture> getFrames() {
+    ArrayList<PImage> getFrames() {
       return frames;
     }
 
@@ -298,15 +303,28 @@ class CameraScene extends Scene {
   }
 
   class DisplayScene extends CameraStateScene {
-    boolean processed = false;
+    private boolean processed = false;
+    private String filename;
     
     DisplayScene(Capture c, OpenCV ocv) {
       super(c, ocv);
       println("DisplayScene");
     }
     
-    void processFrames(ArrayList<Capture> frames, GifMaker gm) {
+    void onDraw(int x, int y) {
+      if(!processed) {
+        fill(255, 255);
+        textSize(40);
+        textAlign(CENTER, CENTER);
+        text("Processing...", 240, 320);
+      }
+    }
+    
+    void processFrames(ArrayList<PImage> frames, PApplet parent, String fn) {
+      filename = fn;
+      GifMaker gf = new GifMaker(parent, filename);
       
+      processed = new FaceGifGenerator(frames, gf, opencv).process();
     }
   }
 
