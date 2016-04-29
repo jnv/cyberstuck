@@ -5,8 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "prebuild": "rimraf dist/",
-    "build": "NODE_ENV=production webpack -p --progress --colors --config webpack.production.config.js",
-    "start": "webpack-dev-server --hot --inline --progress --colors --content-base src"
+    "build": "NODE_ENV=production webpack -p --progress --color --config webpack.production.config.js",
+    "start": "webpack-dev-server --hot --inline --progress --content-base src"
   },
   "dependencies": {
     "phaser": "^2.4.7"
@@ -28,7 +28,7 @@
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "watch": "0.16.0",
-    "webpack": "^1.12.2",
-    "webpack-dev-server": "^1.14.1"
+    "webpack": "^2.1.0-beta.6",
+    "webpack-dev-server": "^2.0.0-beta"
   }
 }

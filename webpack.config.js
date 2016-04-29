@@ -1,3 +1,4 @@
+var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var path = require('path')
 
@@ -6,6 +7,8 @@ var phaserModule = path.join(__dirname, '/node_modules/phaser/')
 var phaser = path.join(phaserModule, 'build/custom/phaser-split.js')
 var pixi = path.join(phaserModule, 'build/custom/pixi.js')
 var p2 = path.join(phaserModule, 'build/custom/p2.js')
+
+var NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'production')
 
 var config = {
   entry: ['./src/index.js'],
@@ -52,6 +55,11 @@ var config = {
     new HtmlWebpackPlugin({
       template: './src/index_template.html',
       inject: 'body', // Inject all scripts into the body
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': NODE_ENV,
+      },
     }),
   ],
   // devtool: 'eval',

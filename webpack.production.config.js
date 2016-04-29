@@ -3,14 +3,7 @@ var config = require('./webpack.config')
 var webpack = require('webpack')
 
 var plugins = [
-  new webpack.DefinePlugin({
-    'process.env': {
-      'NODE_ENV': JSON.stringify('production'),
-    },
-  }),
-  // keeps hashes consistent between compilations
-  new webpack.optimize.OccurenceOrderPlugin(),
-  // minifies your code
+  // just disable warnings for compressor
   new webpack.optimize.UglifyJsPlugin({
     compressor: {
       warnings: false,
