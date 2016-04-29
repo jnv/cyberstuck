@@ -37,9 +37,7 @@ var config = {
         'image?bypassOnDebug&optimizationLevel=7&interlaced=false',
       ],
     },
-    { test: /pixi\.js$/, loader: 'expose?PIXI' },
-    { test: /phaser-split\.js$/, loader: 'expose?Phaser' },
-    { test: /p2\.js$/, loader: 'expose?p2' },
+    { test: /phaser-split\.js$/, loader: 'imports?PIXI=pixi.js&p2' },
     ],
   },
   resolve: {

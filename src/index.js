@@ -1,6 +1,4 @@
-require('pixi.js')
-require('p2')
-require('phaser')
+const Phaser = require('phaser')
 
 const game = new Phaser.Game(480, 640,
   Phaser.AUTO, // renderer
