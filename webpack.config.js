@@ -36,11 +36,10 @@ var config = {
         'url?limit=8192&hash=sha512&digest=hex&name=[hash].[ext]',
         'image?bypassOnDebug&optimizationLevel=7&interlaced=false',
       ],
-    }, {
-      // Required by phaser
-      test: /pixi.js/,
-      loader: 'script',
     },
+    { test: /pixi\.js$/, loader: 'expose?PIXI' },
+    { test: /phaser-split\.js$/, loader: 'expose?Phaser' },
+    { test: /p2\.js$/, loader: 'expose?p2' },
     ],
   },
   resolve: {
@@ -64,11 +63,6 @@ var config = {
   ],
   // devtool: 'eval',
   devtool: 'sourcemap',
-  devServer: {
-    hot: true,
-    inline: true,
-    lazy: false,
-  },
 }
 
 module.exports = config
