@@ -1,0 +1,8 @@
+{
+  "libs": ["browser"],
+  "plugins": {
+    "phaser": {},
+    "node": {},
+    "es_modules": {}
+  }
+}
