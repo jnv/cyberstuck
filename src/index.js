@@ -1,4 +1,5 @@
-const Phaser = require('phaser')
+import './index.css'
+import Phaser from 'phaser'
 
 const game = new Phaser.Game(480, 640,
   Phaser.AUTO, // renderer
@@ -7,3 +8,10 @@ const game = new Phaser.Game(480, 640,
   false, // transparent
   false // antialias
 )
+
+const states = ['Boot', 'Title', 'MainGame']
+states.forEach(state => {
+  game.state.add(state, require(`./states/${state}`).default)
+})
+
+game.state.start('MainGame')
