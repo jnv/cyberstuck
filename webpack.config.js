@@ -8,7 +8,7 @@ var phaser = path.join(phaserModule, 'build/custom/phaser-split.js')
 var pixi = path.join(phaserModule, 'build/custom/pixi.js')
 var p2 = path.join(phaserModule, 'build/custom/p2.js')
 
-var NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'production')
+var NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development')
 
 var config = {
   entry: ['./src/index.js'],
@@ -46,6 +46,7 @@ var config = {
       'phaser': phaser,
       'pixi.js': pixi,
       'p2': p2,
+      'phaser-debug': path.join(__dirname, '/node_modules/phaser-debug/dist/phaser-debug.js'),
     },
   },
   plugins: [

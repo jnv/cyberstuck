@@ -9,7 +9,8 @@
     "start": "webpack-dev-server --content-base src"
   },
   "dependencies": {
-    "phaser": "^2.4.7"
+    "phaser": "^2.4.7",
+    "phaser-debug": "^1.1.8"
   },
   "devDependencies": {
     "babel-core": "^6.7.7",
