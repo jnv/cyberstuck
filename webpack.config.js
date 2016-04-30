@@ -58,6 +58,9 @@ var config = {
         'NODE_ENV': NODE_ENV,
       },
     }),
+    new webpack.ProvidePlugin({
+      Phaser: 'phaser',
+    }),
   ],
   // devtool: 'eval',
   devtool: 'sourcemap',
