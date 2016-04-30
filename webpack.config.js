@@ -1,6 +1,7 @@
 var webpack = require('webpack')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
 var path = require('path')
+var HtmlWebpackPlugin = require('html-webpack-plugin')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 // Via https://github.com/photonstorm/phaser#webpack-config
 var phaserModule = path.join(__dirname, '/node_modules/phaser/')
@@ -23,7 +24,7 @@ var config = {
       exclude: /(node_modules|bower_components)/,
     }, {
       test: /\.css$/,
-      loader: 'style!css',
+      loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
     }, {
       test: /\.json$/,
       loader: 'json',
@@ -61,6 +62,9 @@ var config = {
     }),
     new webpack.ProvidePlugin({
       Phaser: 'phaser',
+    }),
+    new ExtractTextPlugin('styles.css', {
+      allChunks: true,
     }),
   ],
   // devtool: 'eval',

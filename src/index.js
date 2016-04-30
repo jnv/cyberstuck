@@ -1,5 +1,12 @@
 import './index.css'
+import WebFont from 'webfontloader'
 import Phaser from 'phaser'
+
+WebFont.load({
+  custom: {
+    families: ['PressStart2P'],
+  },
+})
 
 const game = new Phaser.Game(480, 640,
   Phaser.AUTO, // renderer
@@ -14,4 +21,4 @@ states.forEach(state => {
   game.state.add(state, require(`./states/${state}`).default)
 })
 
-game.state.start('MainGame')
+game.state.start('Boot')
