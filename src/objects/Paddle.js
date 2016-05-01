@@ -6,7 +6,9 @@ export default function Paddle (game) {
 
   const paddle = {
     y: game.height - PADDLE_OFFSET,
-
+    getSprite () {
+      return sprite
+    },
     preload () {
       game.load.spritesheet('paddle', 'assets/paddle.png', PADDLE_WIDTH, PADDLE_HEIGHT)
     },

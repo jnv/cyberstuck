@@ -7,7 +7,7 @@ const FRAME_INNER_BORDER = 18
 const CANVAS_BORDER = 20
 const BRICK_WIDTH = 42
 const BRICK_HEIGHT = 20
-
+const AVATAR_WIDTH = 64
 const FONT_STYLE = {
   font: '20px PressStart2P',
   fill: '#fff',
@@ -26,12 +26,19 @@ const SCORE_STYLE = {
   boundsAlignH: 'right',
 }
 
+const LIVES_STYLE = {
+  ...FONT_STYLE,
+  boundsAlignV: 'middle',
+  boundsAlignH: 'left',
+}
+
 export default class MainGame extends Phaser.State {
-  init (status = null) {
-    this.gameStatus = {}
+  init (status = {}) {
     this.objects = {
       paddle: Paddle(this.game),
     }
+    this.score = status.score || 0
+    this.lives = status.lives || 3
   }
 
   preload () {
@@ -39,6 +46,7 @@ export default class MainGame extends Phaser.State {
     this.load.image('frame', 'assets/frame.png')
     this.objects.paddle.preload()
     this.load.image('ball', 'assets/ball.png')
+    this.load.image('avatar', 'assets/avatar-default.png')
   }
 
   create () {
@@ -47,7 +55,7 @@ export default class MainGame extends Phaser.State {
     game.plugins.add(PhaserDebug)
 
     game.physics.startSystem(Phaser.Physics.ARCADE)
-    // game.physics.arcade.checkCollision.down = false
+    game.physics.arcade.checkCollision.down = false
 
     // BACKGROUND AND FRAME
     this.add.sprite(0, 0, 'background')
@@ -81,18 +89,31 @@ export default class MainGame extends Phaser.State {
     const scoreTitle = this.add.text(0, 0, 'SCORE', TITLE_STYLE)
     scoreTitle.setTextBounds(...scoreBounds)
 
-    const score = this.add.text(0, 0, '0', SCORE_STYLE)
+    const score = this.add.text(0, 0, this.score.toString(10), SCORE_STYLE)
     score.setTextBounds(...scoreBounds)
 
     objects.score = score
 
+    // AVATAR
+    this.add.sprite(5, 10, 'avatar')
+
+    // LIVES
+    const livesBounds = [
+      CANVAS_BORDER + AVATAR_WIDTH,
+      CANVAS_BORDER,
+      200,
+      54,
+    ]
+    const lives = this.add.text(0, 0, `× ${this.lives.toString(10)}`, LIVES_STYLE)
+    lives.setTextBounds(...livesBounds)
+    objects.lives = lives
 
     // BRICKS
     // objects.bricks.add(200, 150)
     const bricks = game.add.group()
     bricks.enableBody = true
     bricks.physicsBodyType = Phaser.Physics.ARCADE
-
+    this.objects.bricks = bricks
     const brickFill = game.add.bitmapData(BRICK_WIDTH, BRICK_HEIGHT)
     brickFill.ctx.beginPath()
     brickFill.ctx.rect(0, 0, BRICK_WIDTH, BRICK_HEIGHT)
@@ -124,21 +145,83 @@ export default class MainGame extends Phaser.State {
 
     ball.events.onOutOfBounds.add(this.onBallLost, this)
     ball.body.velocity.set(150, -150)
+    objects.ball = ball
   }
 
   createBricks () {
 
   }
 
-  onBallLost () {
-    console.log('ball lost')
-  }
-
   update () {
     const {game, objects} = this
+    const {ball} = objects
+    const paddle = objects.paddle.getSprite()
 
-    //game.physics.arcade.collide(objects.ball, objects.paddle)
+    const paddleSpeed = 5
+    if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+      paddle.x -= paddleSpeed
+    } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+      paddle.x += paddleSpeed
+    }
 
+    game.physics.arcade.collide(ball, paddle, this.onBallHitPaddle, null, this)
+    game.physics.arcade.collide(ball, objects.bricks, this.onBallHitBrick, null, this)
+  }
+
+  onBallLost () {
+    this.addLives(-1)
+  }
+
+  onBallHitPaddle (ball, paddle) {
+    let diff = 0
+
+    if (ball.x < paddle.x) {
+      //  Ball is on the left-hand side of the paddle
+      diff = paddle.x - ball.x
+      ball.body.velocity.x = (-10 * diff)
+    } else if (ball.x > paddle.x) {
+      //  Ball is on the right-hand side of the paddle
+      diff = ball.x - paddle.x
+      ball.body.velocity.x = (10 * diff)
+    } else {
+      //  Ball is perfectly in the middle
+      //  Add a little random X to stop it bouncing straight up!
+      ball.body.velocity.x = 2 + Math.random() * 8
+    }
+  }
+
+  onBallHitBrick (ball, brick) {
+    brick.kill()
+
+    this.addScore(10)
+
+    //  Are they any bricks left?
+    /*if (bricks.countLiving() == 0)
+    {
+      //  New level starts
+      score += 1000;
+      scoreText.text = 'score: ' + score;
+      introText.text = '- Next Level -';
+
+      //  Let's move the ball back to the paddle
+      ballOnPaddle = true;
+      ball.body.velocity.set(0);
+      ball.x = paddle.x + 16;
+      ball.y = paddle.y - 16;
+      ball.animations.stop();
+
+      //  And bring the bricks back from the dead :)
+      bricks.callAll('revive');
+    }*/
+  }
+
+  addScore (val) {
+    this.score += val
+    this.objects.score.text = this.score
+  }
+
+  addLives (val) {
+    this.lives += val
+    this.objects.lives.text = `× ${this.lives}`
   }
 }
-
