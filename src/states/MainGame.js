@@ -39,6 +39,7 @@ export default class MainGame extends Phaser.State {
     }
     this.score = status.score || 0
     this.lives = status.lives || 3
+    this.started = false // FIXME: State machine
   }
 
   preload () {
@@ -136,7 +137,7 @@ export default class MainGame extends Phaser.State {
     objects.paddle.create()
 
     // BALL
-    const ball = game.add.sprite(game.world.centerX, objects.paddle.y - 16, 'ball')
+    const ball = game.add.sprite(game.world.centerX, game.world.centerY, 'ball')
     ball.anchor.set(0.5)
     ball.checkWorldBounds = true
     game.physics.enable(ball, Phaser.Physics.ARCADE)
@@ -144,18 +145,24 @@ export default class MainGame extends Phaser.State {
     ball.body.bounce.set(1)
 
     ball.events.onOutOfBounds.add(this.onBallLost, this)
-    ball.body.velocity.set(150, -150)
     objects.ball = ball
+    this.fieldReset()
   }
 
-  createBricks () {
-
+  fieldReset () {
+    const {game, objects} = this
+    objects.ball.reset(game.world.centerX, game.world.centerY + 100)
+    this.startTimer()
   }
 
   update () {
-    const {game, objects} = this
+    const {game, objects, started} = this
     const {ball} = objects
     const paddle = objects.paddle.getSprite()
+
+    if (!started) {
+
+    }
 
     const paddleSpeed = 5
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
@@ -168,8 +175,24 @@ export default class MainGame extends Phaser.State {
     game.physics.arcade.collide(ball, objects.bricks, this.onBallHitBrick, null, this)
   }
 
+  startTimer () {
+    const {game} = this
+    const readyText = this.add.text(game.world.centerX, game.world.centerY + 50, 'READY', FONT_STYLE)
+    readyText.anchor.set(0.5)
+    game.time.events.add(Phaser.Timer.SECOND * 2, () => {
+      readyText.destroy()
+      this.started = true
+      this.objects.ball.body.velocity.set(150, -150)
+    }, this)
+  }
+
   onBallLost () {
-    this.addLives(-1)
+    const currentLives = this.addLives(-1)
+    if (currentLives < 0) {
+      this.state.start('GameOver', true, false, {win: false})
+    } else {
+      this.fieldReset()
+    }
   }
 
   onBallHitPaddle (ball, paddle) {
@@ -192,7 +215,6 @@ export default class MainGame extends Phaser.State {
 
   onBallHitBrick (ball, brick) {
     brick.kill()
-
     this.addScore(10)
 
     //  Are they any bricks left?
@@ -223,5 +245,6 @@ export default class MainGame extends Phaser.State {
   addLives (val) {
     this.lives += val
     this.objects.lives.text = `× ${this.lives}`
+    return this.lives
   }
 }

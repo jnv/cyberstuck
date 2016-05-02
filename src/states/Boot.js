@@ -11,6 +11,6 @@ export default class Boot extends Phaser.State {
     //scale.pageAlignHorizontally = true
     //scale.pageAlignVertically = true
 
-    this.state.start('Title') // FIXME: Title
+    this.state.start('Title')
   }
 }
