@@ -1,13 +1,21 @@
 import PhaserDebug from 'phaser-debug'
 import colors from '../colors'
 import Paddle from '../objects/Paddle'
-import BrickFactory from '../objects/BrickFactory'
+// import BrickFactory from '../objects/BrickFactory'
 
 const FRAME_INNER_BORDER = 18
 const CANVAS_BORDER = 20
 const BRICK_WIDTH = 42
 const BRICK_HEIGHT = 20
 const AVATAR_WIDTH = 64
+
+const KEYS_MAPPING = {
+  left: 'l',
+  right: 'r',
+  buttonOn: 'b',
+  buttonOff: 'o',
+}
+
 const FONT_STYLE = {
   font: '20px PressStart2P',
   fill: '#fff',
@@ -31,6 +39,8 @@ const LIVES_STYLE = {
   boundsAlignV: 'middle',
   boundsAlignH: 'left',
 }
+
+const PADDLE_MOVE_MULTIPLIER = 7
 
 export default class MainGame extends Phaser.State {
   init (status = {}) {
@@ -146,7 +156,40 @@ export default class MainGame extends Phaser.State {
 
     ball.events.onOutOfBounds.add(this.onBallLost, this)
     objects.ball = ball
+    this.setupInput()
     this.fieldReset()
+  }
+
+  setupInput () {
+    this.resetInput()
+    // sets up input for hotkeys,
+    // i.e. events from Arduino we *have to* capture
+    const {game} = this
+    // game.input.keyboard.addKeyCapture(KEYS_MAPPING)
+    game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
+  }
+
+  onKeyPress (e) {
+    if (!this.started) {
+      return
+    }
+
+    const {keys} = this
+    switch (e) {
+      case KEYS_MAPPING.left:
+        keys.move -= 1
+        break
+      case KEYS_MAPPING.right:
+        keys.move += 1
+        break
+      case KEYS_MAPPING.buttonOn:
+        keys.button = true
+        break
+      case KEYS_MAPPING.buttonOff:
+        keys.button = false
+        break
+    }
+    console.log(keys)
   }
 
   fieldReset () {
@@ -156,14 +199,26 @@ export default class MainGame extends Phaser.State {
     this.startTimer()
   }
 
+  resetInput () {
+    this.keys = {
+      move: 0,
+      button: false,
+    }
+  }
+
   update () {
     if (!this.started) {
       return
     }
 
-    const {game, objects} = this
+    const {game, objects, keys} = this
     const {ball} = objects
     const paddle = objects.paddle.getSprite()
+
+    if (keys.move !== 0) {
+      paddle.x += (keys.move * PADDLE_MOVE_MULTIPLIER) // FIXME: perhaps we should check time delta
+      keys.move = 0
+    }
 
     const paddleSpeed = 5
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
@@ -183,6 +238,7 @@ export default class MainGame extends Phaser.State {
     readyText.anchor.set(0.5)
     game.time.events.add(Phaser.Timer.SECOND * 2, () => {
       readyText.destroy()
+      this.resetInput()
       this.started = true
       this.objects.ball.body.velocity.set(150, -150)
     }, this)
