@@ -22,6 +22,11 @@
 #define DIR_CCW 0x10
 #define DIR_CW 0x20
 
+#define OUTPUT_ROTARY_CW "l"
+#define OUTPUT_ROTARY_CCW "r"
+#define OUTPUT_BUTTON_ON "b"
+#define OUTPUT_BUTTON_OFF "o"
+
 #ifdef HALF_STEP
 // Use the half-step state table (emits a code at 00 and 11)
 const unsigned char ttable[6][4] = {
@@ -72,8 +77,8 @@ void setup() {
   Serial.begin(115200);
   rotary_init();
   // init button
-  pinMode(BUTTON_PIN, INPUT);  
-  digitalWrite(BUTTON_PIN, HIGH);  
+  pinMode(BUTTON_PIN, INPUT);
+  digitalWrite(BUTTON_PIN, HIGH);
 }
 
 void loop() {
@@ -82,16 +87,17 @@ void loop() {
   if (currentTime >= (lastTime + 5)) {
     unsigned char result = rotary_process();
     if (result) {
-      Serial.println(result == DIR_CCW ? "R" : "L"); //hack   
+      // FIXME: the output is switched, dunno why
+      Serial.print(result == DIR_CCW ? OUTPUT_ROTARY_CCW : OUTPUT_ROTARY_CW);
     }
 
     int buttonState = digitalRead(BUTTON_PIN);
     if (lastButtonState != buttonState) {
       if(buttonState == LOW) {
         // off -> on
-        Serial.println("B");
+        Serial.print(OUTPUT_BUTTON_ON);
       } else {
-        Serial.println("M");
+        Serial.print(OUTPUT_BUTTON_OFF);
       }
       //Serial.println("B");
       lastButtonState = buttonState;
