@@ -22,6 +22,10 @@ export default class GameOver extends Phaser.State {
 
     const finalText = this.add.text(game.world.centerX, game.world.centerY, textStr, FONT_STYLE)
     finalText.anchor.set(0.5)
+
+    game.input.keyboard.onDownCallback = () => {
+      this.state.start('Title')
+    }
   }
 
   update () {

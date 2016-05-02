@@ -152,17 +152,18 @@ export default class MainGame extends Phaser.State {
   fieldReset () {
     const {game, objects} = this
     objects.ball.reset(game.world.centerX, game.world.centerY + 100)
+    objects.paddle.reset()
     this.startTimer()
   }
 
   update () {
-    const {game, objects, started} = this
+    if (!this.started) {
+      return
+    }
+
+    const {game, objects} = this
     const {ball} = objects
     const paddle = objects.paddle.getSprite()
-
-    if (!started) {
-
-    }
 
     const paddleSpeed = 5
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
@@ -177,6 +178,7 @@ export default class MainGame extends Phaser.State {
 
   startTimer () {
     const {game} = this
+    this.started = false
     const readyText = this.add.text(game.world.centerX, game.world.centerY + 50, 'READY', FONT_STYLE)
     readyText.anchor.set(0.5)
     game.time.events.add(Phaser.Timer.SECOND * 2, () => {

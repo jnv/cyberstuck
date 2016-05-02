@@ -5,6 +5,7 @@ export default function Paddle (game) {
   let sprite
 
   const paddle = {
+    x: game.world.centerX,
     y: game.height - PADDLE_OFFSET,
     getSprite () {
       return sprite
@@ -13,7 +14,7 @@ export default function Paddle (game) {
       game.load.spritesheet('paddle', 'assets/paddle.png', PADDLE_WIDTH, PADDLE_HEIGHT)
     },
     create () {
-      sprite = game.add.sprite(game.world.centerX, paddle.y, 'paddle')
+      sprite = game.add.sprite(paddle.x, paddle.y, 'paddle')
 
       sprite.anchor.setTo(0.5, 0.5)
       sprite.animations.add('default')
@@ -24,6 +25,11 @@ export default function Paddle (game) {
       sprite.body.bounce.set(1)
       sprite.body.immovable = true
     },
+
+    reset () {
+      sprite.reset(paddle.x, paddle.y)
+    },
+
     update () {
 
     },
