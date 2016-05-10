@@ -8,6 +8,7 @@ var phaserModule = path.join(__dirname, '/node_modules/phaser/')
 var phaser = path.join(phaserModule, 'build/custom/phaser-split.js')
 var pixi = path.join(phaserModule, 'build/custom/pixi.js')
 var p2 = path.join(phaserModule, 'build/custom/p2.js')
+var pixiFix = path.join(__dirname, 'src/lib/pixi-phaser-fix.js')
 
 var NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development')
 
@@ -39,14 +40,15 @@ var config = {
       ],
     },
     { test: /phaser-split\.js$/, loader: 'imports?PIXI=pixi.js&p2' },
+    { test: /pixi\.js$/, loader: 'imports?Phaser=pixiFix' },
     ],
   },
   resolve: {
     alias: {
-      // Required by phaser
       'phaser': phaser,
       'pixi.js': pixi,
       'p2': p2,
+      'pixiFix': pixiFix,
       'phaser-debug': path.join(__dirname, '/node_modules/phaser-debug/dist/phaser-debug.js'),
     },
   },
