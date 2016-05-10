@@ -1,4 +1,4 @@
-import '../lib/Webcam'
+import Webcam from '../lib/HeadCapture'
 import conf from '../config'
 
 export default class Camera extends Phaser.State {
@@ -8,7 +8,7 @@ export default class Camera extends Phaser.State {
 
   create () {
     const {game} = this
-    const camera = new Phaser.Plugin.Webcam(game, this)
+    const camera = new Webcam(game, this)
     this.camera = camera
 
     const camBitmap = this.add.bitmapData(conf.camera.width, conf.camera.height)
