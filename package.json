@@ -4,7 +4,9 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
-    "prebuild": "rimraf dist/",
+    "clean": "rimraf dist/",
+    "build:assets": "mkdirp dist/ && ncp src/assets dist/assets",
+    "prebuild": "npm run clean && npm run build:assets",
     "build": "NODE_ENV=production webpack -p --progress --color --config webpack.production.config.js",
     "start": "webpack-dev-server --content-base src"
   },
@@ -29,6 +31,8 @@
     "html-webpack-plugin": "^2.16.0",
     "imports-loader": "^0.6.5",
     "json-loader": "^0.5.4",
+    "mkdirp": "^0.5.1",
+    "ncp": "^2.0.0",
     "rimraf": "^2.5.2",
     "script-loader": "^0.7.0",
     "style-loader": "^0.13.1",
