@@ -1,6 +1,6 @@
 export default class Title extends Phaser.State {
   init () {
-    this.state.start('MainGame') // FIXME: Camera
+    this.state.start('Camera') // FIXME: Camera
   }
 
   preload () {

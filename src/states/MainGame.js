@@ -63,8 +63,6 @@ export default class MainGame extends Phaser.State {
   create () {
     const {game, objects} = this
 
-    game.plugins.add(PhaserDebug)
-
     game.physics.startSystem(Phaser.Physics.ARCADE)
     game.physics.arcade.checkCollision.down = false
 
