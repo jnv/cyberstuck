@@ -30,15 +30,25 @@ export default class HeadCapture extends Phaser.Plugin {
     this.onTrackingStatus = new Phaser.Signal()
     this.onFaceTracking = new Phaser.Signal()
 
-    document.addEventListener('headtrackrStatus', (event) => {
+    this.trackingListener = (event) => {
       // console.log(event.status)
       this.onTrackingStatus.dispatch(event.status)
-    })
+    }
 
-    document.addEventListener('facetrackingEvent', (event) => {
+    this.facetrackingListener = (event) => {
       // console.log(event)
       this.onFaceTracking.dispatch(event)
-    })
+    }
+  }
+
+  addEventListeners () {
+    document.addEventListener('headtrackrStatus', this.trackingListener)
+    document.addEventListener('facetrackingEvent', this.facetrackingListener)
+  }
+
+  removeEventListeners () {
+    document.removeEventListener('headtrackrStatus', this.trackingListener)
+    document.removeEventListener('facetrackingEvent', this.facetrackingListener)
   }
 
   start (width, height, context) {
@@ -46,6 +56,7 @@ export default class HeadCapture extends Phaser.Plugin {
 
     if (!this.stream) {
       navigator.getUserMedia({ video: { mandatory: { minWidth: width, minHeight: height } } }, this.connectCallback.bind(this), this.errorCallback.bind(this))
+      this.addEventListeners()
       this.tracker.start()
     }
   }
@@ -54,6 +65,7 @@ export default class HeadCapture extends Phaser.Plugin {
     if (this.stream) {
       this.tracker.stop()
       this.stream.stop()
+      this.removeEventListeners()
       this.stream = null
     }
   }
