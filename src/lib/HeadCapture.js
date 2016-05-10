@@ -1,17 +1,44 @@
+import headtrackr from 'headtrackr'
+
 export default class HeadCapture extends Phaser.Plugin {
-  constructor (game, parent) {
+  constructor (game, parent, trackingOptions = {}) {
     super(game, parent)
+
+    const options = {
+      ui: false,
+      smoothing: true,
+      detectionInterval: 100,
+      headPosition: true,
+      ...trackingOptions,
+    }
 
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia
 
     this.context = null
     this.stream = null
 
+    this.canvas = document.createElement('canvas')
+
     this.video = document.createElement('video')
     this.video.autoplay = true
 
+    this.tracker = new headtrackr.Tracker(options)
+    this.tracker.init(this.video, this.canvas, false)
+
     this.onConnect = new Phaser.Signal()
     this.onError = new Phaser.Signal()
+    this.onTrackingStatus = new Phaser.Signal()
+    this.onFaceTracking = new Phaser.Signal()
+
+    document.addEventListener('headtrackrStatus', (event) => {
+      // console.log(event.status)
+      this.onTrackingStatus.dispatch(event.status)
+    })
+
+    document.addEventListener('facetrackingEvent', (event) => {
+      // console.log(event)
+      this.onFaceTracking.dispatch(event)
+    })
   }
 
   start (width, height, context) {
@@ -19,11 +46,13 @@ export default class HeadCapture extends Phaser.Plugin {
 
     if (!this.stream) {
       navigator.getUserMedia({ video: { mandatory: { minWidth: width, minHeight: height } } }, this.connectCallback.bind(this), this.errorCallback.bind(this))
+      this.tracker.start()
     }
   }
 
   stop () {
     if (this.stream) {
+      this.tracker.stop()
       this.stream.stop()
       this.stream = null
     }
