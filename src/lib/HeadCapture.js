@@ -9,12 +9,19 @@ export default class HeadCapture extends Phaser.Plugin {
   constructor (game, parent, trackingOptions = {}) {
     super(game, parent)
 
+    /*
+    const debug = document.createElement('canvas')
+    document.body.appendChild(debug)
+    debug.width = 320
+    debug.height = 240
+    */
+
     const options = {
       ui: false,
-      smoothing: true,
-      detectionInterval: 50,
+      smoothing: false,
+      detectionInterval: 20,
       headPosition: true,
-      whitebalancing: false,
+      // debug,
       ...trackingOptions,
     }
 
@@ -24,6 +31,10 @@ export default class HeadCapture extends Phaser.Plugin {
     this.stream = null
 
     this.canvas = document.createElement('canvas')
+    this.canvas.width = 320
+    this.canvas.height = 240
+
+    // document.body.appendChild(this.canvas)
 
     this.video = document.createElement('video')
     this.video.autoplay = true
@@ -63,8 +74,6 @@ export default class HeadCapture extends Phaser.Plugin {
     this.width = width
     this.height = height
     this.context = context
-    this.canvas.width = width
-    this.canvas.height = height
   }
 
   start () {
@@ -109,7 +118,12 @@ export default class HeadCapture extends Phaser.Plugin {
     // context.drawImage(this.video, x, y)
     const context = this.canvas.getContext('2d')
     const {x, y, width, height} = this.lastResult
-    const image = context.getImageData(x, y, width, height)
+
+    // x and y are CENTER of object, need to recalculate the crop rect
+    const sx = x - width / 2
+    const sy = y - height / 2
+
+    const image = context.getImageData(sx, sy, width, height)
     return image
   }
 
