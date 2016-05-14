@@ -4,7 +4,7 @@ export default {
     white: '#fff',
   },
   text: {
-    font: '20px PressStart2P',
+    font: '22px PressStart2P',
     fill: '#fff',
   },
 }

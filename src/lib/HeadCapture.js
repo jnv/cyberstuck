@@ -1,5 +1,10 @@
 import headtrackr from 'headtrackr'
 
+function facetrackingResult (event = {}) {
+  const {x, y, width, height, confidence} = event
+  return {x, y, width, height, confidence}
+}
+
 export default class HeadCapture extends Phaser.Plugin {
   constructor (game, parent, trackingOptions = {}) {
     super(game, parent)
@@ -7,8 +12,9 @@ export default class HeadCapture extends Phaser.Plugin {
     const options = {
       ui: false,
       smoothing: true,
-      detectionInterval: 100,
+      detectionInterval: 50,
       headPosition: true,
+      whitebalancing: false,
       ...trackingOptions,
     }
 
@@ -29,6 +35,7 @@ export default class HeadCapture extends Phaser.Plugin {
     this.onError = new Phaser.Signal()
     this.onTrackingStatus = new Phaser.Signal()
     this.onFaceTracking = new Phaser.Signal()
+    this.lastResult = {}
 
     this.trackingListener = (event) => {
       // console.log(event.status)
@@ -38,6 +45,7 @@ export default class HeadCapture extends Phaser.Plugin {
     this.facetrackingListener = (event) => {
       // console.log(event)
       this.onFaceTracking.dispatch(event)
+      this.lastResult = event
     }
   }
 
@@ -55,6 +63,8 @@ export default class HeadCapture extends Phaser.Plugin {
     this.width = width
     this.height = height
     this.context = context
+    this.canvas.width = width
+    this.canvas.height = height
   }
 
   start () {
@@ -92,10 +102,15 @@ export default class HeadCapture extends Phaser.Plugin {
     this.onError.dispatch(event)
   }
 
-  grab (context, x, y) {
-    if (this.stream) {
-      context.drawImage(this.video, x, y)
+  grab () {
+    if (!this.stream) {
+      throw new Error('Stream not available')
     }
+    // context.drawImage(this.video, x, y)
+    const context = this.canvas.getContext('2d')
+    const {x, y, width, height} = this.lastResult
+    const image = context.getImageData(x, y, width, height)
+    return image
   }
 
   update () {

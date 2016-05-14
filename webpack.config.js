@@ -45,6 +45,7 @@ var config = {
   },
   resolve: {
     alias: {
+      'state-machine': 'javascript-state-machine',
       'phaser': phaser,
       'pixi.js': pixi,
       'p2': p2,
