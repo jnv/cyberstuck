@@ -51,11 +51,21 @@ export default class HeadCapture extends Phaser.Plugin {
     document.removeEventListener('facetrackingEvent', this.facetrackingListener)
   }
 
-  start (width, height, context) {
+  setup (width, height, context) {
+    this.width = width
+    this.height = height
     this.context = context
+  }
+
+  start () {
+    if (!this.width || !this.height || !this.context) {
+      throw new Error('Camera was not initialized with setup')
+    }
 
     if (!this.stream) {
-      navigator.getUserMedia({ video: { mandatory: { minWidth: width, minHeight: height } } }, this.connectCallback.bind(this), this.errorCallback.bind(this))
+      navigator.getUserMedia({
+        video: { mandatory: { minWidth: this.width, minHeight: this.height } } },
+        this.connectCallback.bind(this), this.errorCallback.bind(this))
       this.addEventListeners()
       this.tracker.start()
     }
@@ -64,7 +74,7 @@ export default class HeadCapture extends Phaser.Plugin {
   stop () {
     if (this.stream) {
       this.tracker.stop()
-      this.stream.stop()
+      this.stream.getTracks().forEach(s => s.stop())
       this.removeEventListeners()
       this.stream = null
     }
