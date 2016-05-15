@@ -109,8 +109,43 @@ export default class MainGame extends Phaser.State {
     this.state.init()
   }
 
-  update () {
+  addScore (amount) {
+    this.gameStatus.score += amount
+    this.hud.update(this.gameStatus)
+  }
 
+  onBallHitPaddle (ball, paddle) {
+    let diff = 0
+
+    if (ball.x < paddle.x) {
+      //  Ball is on the left-hand side of the paddle
+      diff = paddle.x - ball.x
+      ball.body.velocity.x = (-10 * diff)
+    } else if (ball.x > paddle.x) {
+      //  Ball is on the right-hand side of the paddle
+      diff = ball.x - paddle.x
+      ball.body.velocity.x = (10 * diff)
+    } else {
+      //  Ball is perfectly in the middle
+      //  Add a little random X to stop it bouncing straight up!
+      ball.body.velocity.x = 2 + Math.random() * 8
+    }
+  }
+
+  onBallHitBrick (ball, brick) {
+    brick.damage(1)
+    this.addScore(10)
+
+    //  Are there any bricks left?
+    if (this.bricks.countLiving() === 0) {
+      this.state.win()
+    }
+  }
+
+  update () {
+    const {game, ball, paddle, bricks} = this
+    game.physics.arcade.collide(ball, paddle, this.onBallHitPaddle, null, this)
+    game.physics.arcade.collide(ball, bricks, this.onBallHitBrick, null, this)
   }
 
 }

@@ -17,6 +17,5 @@ export default function parse (levelStr) {
       return false
     })
   })
-  console.log(result)
   return result
 }

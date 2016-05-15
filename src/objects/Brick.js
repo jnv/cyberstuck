@@ -11,8 +11,8 @@ export default class Paddle extends Phaser.Sprite {
   }
 
   enablePhysics () {
-    this.enableBody = true
-    this.physicsBodyType = Phaser.Physics.ARCADE
+    this.body.bounce.set(1)
+    this.body.immovable = true
   }
 
 }
