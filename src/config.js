@@ -6,7 +6,7 @@ export default {
   },
   avatar: {
     frames: 5,
-    width: 60,
+    width: 70,
     height: 70,
   },
 }
