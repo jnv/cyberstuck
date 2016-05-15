@@ -1,6 +1,7 @@
 import RgbQuant from 'rgbquant'
 import config from '../config'
 import palette from '../palette.json'
+import PIXI from 'pixi.js'
 
 const avatar = config.avatar
 const CANVAS_WIDTH = avatar.width * avatar.frames
@@ -25,39 +26,64 @@ const QUANT_OPTS = {
 
 const Q = new RgbQuant(QUANT_OPTS)
 
-function putPixels (subpxArr, width, height, id) {
-  var can = document.createElement('canvas')
-  id && can.setAttribute('id', id)
-  can.width = width
-  can.height = height
-  var ctx = can.getContext('2d')
-  var imgd = ctx.createImageData(can.width,can.height)
-  imgd.data.set(subpxArr)
-  ctx.putImageData(imgd,0,0)
-  document.body.appendChild(can)
+// 1. resize ImageData
+// 2. quantize
+// 3. compose
+
+function scaleRatio (original, target) {
+  const hRatio = target.width / original.width
+  const vRatio = target.height / original.height
+  return Math.min(hRatio, vRatio)
 }
 
-function quantize (imageData) {
+function centerShift (origDim, targetDim, ratio) {
+  return (targetDim - origDim * ratio) / 2
+}
+
+function imageDataToCanvas (imageData) {
   const {width, height} = imageData
-  const data = Q.reduce(imageData)
-  putPixels(data, width, height)
+  const c = PIXI.CanvasPool.create('imageDataToCanvas', width, height)
+  const ctx = c.getContext('2d')
+  ctx.clearRect(0, 0, c.width, c.height)
+  ctx.putImageData(imageData, 0, 0)
+
+  return c
 }
 
-export default function processCapture (frame) {
-  return quantize(frame)
+function pixelsToCanvas (canvas, subpxArr) {
+  const ctx = canvas.getContext('2d')
+  const imgd = ctx.createImageData(canvas.width, canvas.height)
+  imgd.data.set(subpxArr)
+  ctx.putImageData(imgd, 0, 0)
 }
 
-function composeFrames (frames) {
+function quantizeCanvas (canvas) {
+  const data = Q.reduce(canvas)
+  pixelsToCanvas(canvas, data)
+}
+
+export default function composeFrames (frames) {
   const canvas = document.createElement('canvas')
   canvas.width = CANVAS_WIDTH
   canvas.height = CANVAS_HEIGHT
   const ctx = canvas.getContext('2d')
 
-  const quantized = frames.map(quantize)
+  const {width: aW, height: aH} = avatar
 
-  /*for (let i = quantized.length - 1 i >= 0 i--) {
-    const frame = quantized[i]
-    const dx = i * avatar.width
-  }*/
+  for (let i = frames.length - 1; i >= 0; i--) {
+    const imgd = frames[i]
+    const {width, height} = imgd
+    const ratio = scaleRatio(imgd, avatar)
+    const targetX = (i * aW) + centerShift(width, aW, ratio)
+    const targetY = 0 + centerShift(height, aH, ratio)
 
+    const imgC = imageDataToCanvas(imgd)
+    ctx.drawImage(imgC, targetX, targetY, width * ratio, height * ratio)
+    PIXI.CanvasPool.removeByCanvas(imgC)
+    // document.body.appendChild(imgC)
+  }
+
+  quantizeCanvas(canvas)
+
+  return canvas
 }

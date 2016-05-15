@@ -11,9 +11,15 @@
     "start": "webpack-dev-server --content-base src"
   },
   "dependencies": {
+    "enum": "^2.3.0",
     "headtrackr": "0.0.1",
+    "image-q": "^0.1.4",
+    "javascript-state-machine": "^2.3.5",
     "phaser": "^2.4.7",
     "phaser-debug": "^1.1.8",
+    "rgbquant": "^1.1.2",
+    "statelet": "^0.3.0",
+    "stately.js": "^1.3.0",
     "webfontloader": "^1.6.24"
   },
   "devDependencies": {
@@ -21,6 +27,7 @@
     "babel-loader": "^6.2.4",
     "babel-preset-es2015-webpack": "^6.4.1",
     "babel-preset-stage-2": "^6.5.0",
+    "color": "^0.11.1",
     "css-loader": "^0.23.1",
     "eslint": "^2.9.0",
     "eslint-config-standard": "^5.2.0",

@@ -1,17 +1,18 @@
 import StateMachine from 'state-machine'
 import Webcam from '../lib/HeadCapture'
 import conf from '../config'
-import processCapture from '../lib/processCapture'
+import composeFrames from '../lib/processCapture'
 import style from '../style'
 
 // const States = new Enum(['noFace', 'faceReady', 'countdown', 'recording', 'display'], { freez: true })
 
-const COUNTDOWN_START = 5
-const CAPTURE_INTERVAL = 1000
+const COUNTDOWN_START = 3
+const CAPTURE_INTERVAL = 600
 const CAPTURE_COUNT = conf.avatar.frames
 const TEXTS = {
   wait: 'GET READY...',
   noFace: 'FACE THE CAMERA',
+  processing: 'PROCESSING...',
 }
 
 export default class Camera extends Phaser.State {
@@ -23,15 +24,22 @@ export default class Camera extends Phaser.State {
 
     const state = StateMachine.create({
       events: [
-        {name: 'start', from: 'none', to: 'NoFace'},
+        {name: 'start', from: 'none', to: 'Start'},
+        {name: 'faceLost', from: ['Start', 'NoFace', 'FaceVisible', 'Countdown'], to: 'NoFace'},
         {name: 'faceFound', from: ['NoFace', 'FaceVisible'], to: 'FaceVisible'},
-        {name: 'faceLost', from: ['NoFace', 'FaceVisible', 'Countdown'], to: 'NoFace'},
         {name: 'startCountdown', from: 'FaceVisible', to: 'Countdown'},
         {name: 'startCapture', from: 'Countdown', to: 'Capture'},
-        {name: 'startDisplay', from: 'Capture', to: 'Display'},
+        {name: 'processCapture', from: 'Capture', to: 'Processing'},
+        {name: 'startDisplay', from: 'Processing', to: 'Display'},
         // {name: 'reset', from: 'Display', to: 'NoFace'},
       ],
       callbacks: {
+        onStart: () => {
+          this.camBitmap.visible = true
+          this.camBitmap.alpha = 1
+          this.camera.start()
+          state.faceLost()
+        },
         onNoFace: () => {
           // set text
           this.overlayText.text = TEXTS.noFace
@@ -48,6 +56,9 @@ export default class Camera extends Phaser.State {
           let countdown = COUNTDOWN_START
           this.overlayText.text = countdown
           game.time.events.repeat(1000, COUNTDOWN_START, () => {
+            if (!state.is('Countdown')) {
+              return
+            }
             countdown--
             if (countdown === 0) {
               state.startCapture()
@@ -68,12 +79,22 @@ export default class Camera extends Phaser.State {
             count--
             captures.push(this.captureFrame())
             if (count === 0) {
-              state.startDisplay(captures)
+              state.processCapture(captures)
             }
           })
         },
+        onProcessing: (event, from, to, frames) => {
+          this.camera.stop()
+          this.camBitmap.visible = false
+          this.camBitmap.clear()
+          // this.overlayText.text = TEXTS.processing
+          this.generateAvatar(frames)
+          state.startDisplay()
+        },
+        onleaveProcessing: () => {
+          this.overlayText.text = ''
+        },
         onDisplay: (event, from, to, frames) => {
-          this.generateSprite(frames)
         },
       },
     })
@@ -96,7 +117,7 @@ export default class Camera extends Phaser.State {
     camera.onError.add(this.onCameraError, this)
     camera.onFaceTracking.add(this.onFaceTracking, this)
     camera.onTrackingStatus.add(this.onTrackingStatus, this)
-    camera.setup(camBitmap.width, camBitmap.height, this.camBitmap.context)
+    camera.setup(camBitmap.width, camBitmap.height, camBitmap.context)
     this.add.plugin(camera)
 
     this.surface = this.add.sprite(0, 140, camBitmap)
@@ -119,7 +140,6 @@ export default class Camera extends Phaser.State {
     this.overlayText = overlayText
 
     this.state.start()
-    this.camera.start()
   }
 
   onPause () {
@@ -128,7 +148,9 @@ export default class Camera extends Phaser.State {
   }
   onResume () {
     console.log('resume')
-    this.camera.start()
+    if (!this.stateis('Display')) {
+      this.camera.start()
+    }
   }
 
   onCameraConnect (e) {
@@ -149,9 +171,18 @@ export default class Camera extends Phaser.State {
     return this.camera.grab()
   }
 
-  generateSprite (frames) {
-    const imgData = frames.map(processCapture)
-    console.log(imgData)
+  generateAvatar (frames) {
+    const canvas = composeFrames(frames)
+    const {game} = this
+    game.load.spritesheet('avatar', canvas.toDataURL(), conf.avatar.width, conf.avatar.height)
+    game.load.start()
+
+    const avatar = this.add.sprite(game.world.centerX, game.world.centerY, 'avatar')
+    avatar.anchor.setTo(0.5, 0.5)
+    avatar.animations.add('default')
+    avatar.animations.play('default', 1, true)
+
+    this.avatar = avatar
   }
 
   onTrackingStatus (state) {
@@ -194,7 +225,9 @@ export default class Camera extends Phaser.State {
 
   update () {
     // this.camera.update()
-    this.camBitmap.update()
+    // if (this.camBitmap.visible) {
+    //   this.camBitmap.update()
+    // }
   }
 
 }

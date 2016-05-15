@@ -9,12 +9,11 @@ export default class HeadCapture extends Phaser.Plugin {
   constructor (game, parent, trackingOptions = {}) {
     super(game, parent)
 
-    /*
-    const debug = document.createElement('canvas')
-    document.body.appendChild(debug)
-    debug.width = 320
-    debug.height = 240
-    */
+    // const debug = document.createElement('canvas')
+    // debug.className = 'camera-debug-overlay'
+    // document.body.appendChild(debug)
+    // debug.width = 320
+    // debug.height = 240
 
     const options = {
       ui: false,
