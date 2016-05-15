@@ -1,32 +1,78 @@
-import colors from '../colors'
+import StateMachine from 'state-machine'
+
+import style from '../style'
+
 import Hud from '../objects/Hud'
 import Paddle from '../objects/Paddle'
 import Level from '../objects/Level'
 import BricksGroup from '../objects/BricksGroup'
+import Ball from '../objects/Ball'
 import LEVELS from '../levels'
 // import BrickFactory from '../objects/BrickFactory'
 
 const FRAME_INNER_BORDER = 19
-const CANVAS_BORDER = 20
-const BRICK_WIDTH = 42
-const BRICK_HEIGHT = 20
-const AVATAR_WIDTH = 64
 
 export default class MainGame extends Phaser.State {
-  init (status = {level: 1, score: 0, lives: 3}) {
-    this.gameStatus = status
+  init (status = {level: 1, score: 0, lives: 1}) {
+    const {game} = this
 
+    this.gameStatus = status
     this.levelSpec = LEVELS[status.level]
+
+    const levelText = `LEVEL ${status.level}`
+
+    const state = StateMachine.create({
+      events: [
+        {name: 'init', from: 'none', to: 'Ready'},
+        {name: 'start', from: 'Ready', to: 'Playing'},
+        {name: 'ballLost', from: 'Playing', to: 'Ready'},
+        {name: 'win', from: 'Playing', to: 'Won'},
+        {name: 'lose', from: ['Ready', 'Playing'], to: 'Lost'},
+        // {name: 'reset', from: 'Display', to: 'NoFace'},
+      ],
+      callbacks: {
+        onReady: () => {
+          // display LEVEL text
+          const readyText = this.add.text(game.world.centerX, game.world.centerY + 50, levelText, style.font)
+          readyText.anchor.set(0.5)
+          // setup timer for start()
+          game.time.events.add(Phaser.Timer.SECOND * 2, () => {
+            readyText.destroy()
+            state.start()
+          })
+        },
+        onPlaying: () => {
+          // start ball
+          console.log('onPlaying')
+          this.ball.start()
+        },
+        onbeforeballLost: () => {
+          this.gameStatus.lives -= 1
+          if (this.gameStatus.lives < 0) {
+            state.lose()
+            return false
+          }
+          this.hud.update(this.gameStatus)
+          this.ball.reset()
+        },
+        onWon: () => {
+          // check if there are more levels
+          // either transition to MainGame state with new level or go to Win
+        },
+        onLost: () => {
+          console.log('lost')
+          // go to GameOver state
+        },
+      },
+    })
+    this.state = state
   }
 
   preload () {
-    this.load.image('frame', 'assets/frame.png')
-    this.load.image('ball', 'assets/ball.png')
     Paddle.preload(this)
     Level.preload(this, this.gameStatus.level)
     BricksGroup.preload(this)
-
-    this.load.image('avatar', 'assets/avatar-default.png')
+    Ball.preload(this)
   }
 
   create () {
@@ -54,6 +100,13 @@ export default class MainGame extends Phaser.State {
     this.paddle = new Paddle(game, this)
     this.bricks = new BricksGroup(game, this, worldBounds[0], worldBounds[1])
     this.bricks.addBricks(this.levelSpec)
+
+    const ball = new Ball(game, this)
+    ball.enablePhysics()
+    ball.events.onOutOfBounds.add(() => this.state.ballLost())
+    this.ball = ball
+
+    this.state.init()
   }
 
   update () {
