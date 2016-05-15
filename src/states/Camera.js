@@ -131,7 +131,7 @@ export default class Camera extends Phaser.State {
     this.shutter = shutter
 
     const overlayStyle = {
-      ...style.text,
+      ...style.font,
       stroke: '#000',
       strokeThickness: 3,
     }
