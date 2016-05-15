@@ -78,12 +78,14 @@ export default function composeFrames (frames) {
     const targetY = 0 + centerShift(height, aH, ratio)
 
     const imgC = imageDataToCanvas(imgd)
-    ctx.drawImage(imgC, targetX, targetY, width * ratio, height * ratio)
+    const resized = PIXI.CanvasPool.create('composeFrames', width * ratio, height * ratio)
+    resized.getContext('2d').drawImage(imgC, 0, 0, resized.width, resized.height)
+    quantizeCanvas(resized)
+    ctx.drawImage(resized, targetX, targetY)
+    PIXI.CanvasPool.removeByCanvas(resized)
     PIXI.CanvasPool.removeByCanvas(imgC)
-    // document.body.appendChild(imgC)
   }
-
-  quantizeCanvas(canvas)
+  // document.body.appendChild(canvas)
 
   return canvas
 }
