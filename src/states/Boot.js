@@ -2,7 +2,7 @@ import PhaserDebug from 'phaser-debug'
 
 export default class Boot extends Phaser.State {
   preload () {
-
+    this.load.image('bg_base', 'assets/bg.png')
   }
 
   create () {
