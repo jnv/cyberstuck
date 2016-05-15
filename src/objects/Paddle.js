@@ -1,42 +1,36 @@
 const PADDLE_OFFSET = 40
-const PADDLE_WIDTH = 100
-const PADDLE_HEIGHT = 15
-export default function Paddle (game) {
-  let sprite
+const PADDLE_WIDTH = 84
+const PADDLE_HEIGHT = 13
 
-  const paddle = {
-    x: game.world.centerX,
-    y: game.height - PADDLE_OFFSET,
-    getSprite () {
-      return sprite
-    },
-    preload () {
-      game.load.spritesheet('paddle', 'assets/paddle.png', PADDLE_WIDTH, PADDLE_HEIGHT)
-    },
-    create () {
-      sprite = game.add.sprite(paddle.x, paddle.y, 'paddle')
-
-      sprite.anchor.setTo(0.5, 0.5)
-      sprite.animations.add('default')
-      sprite.animations.play('default', 2, true)
-
-      game.physics.enable(sprite, Phaser.Physics.ARCADE)
-      sprite.body.collideWorldBounds = true
-      sprite.body.bounce.set(1)
-      sprite.body.immovable = true
-    },
-
-    reset () {
-      sprite.reset(paddle.x, paddle.y)
-    },
-
-    update () {
-
-    },
-    kill () {
-
-    },
+export default class Paddle extends Phaser.Sprite {
+  static preload (game) {
+    game.load.spritesheet('paddle', 'assets/paddle.png', PADDLE_WIDTH, PADDLE_HEIGHT)
   }
 
-  return paddle
+  constructor (game, parent) {
+    const x = game.world.centerX
+    const y = game.height - PADDLE_OFFSET
+
+    super(game, x, y, 'paddle')
+
+    this.defaultX = x
+    this.defaultY = y
+
+    this.anchor.setTo(0.5, 0.5)
+
+    this.animations.add('default')
+    this.animations.play('default', 2, true)
+
+    parent.physics.enable(this, Phaser.Physics.ARCADE)
+    this.body.collideWorldBounds = true
+    this.body.bounce.set(1)
+    this.body.immovable = true
+
+    parent.add.existing(this)
+  }
+
+  reset () {
+    this.x = this.defaultX
+    this.y = this.defaultY
+  }
 }
