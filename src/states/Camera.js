@@ -93,7 +93,10 @@ export default class Camera extends Phaser.State {
           this.overlayText.text = ''
         },
         onDisplay: (event, from, to, frames) => {
-          // FIXME: handle jump to next state
+          this.input.keyboard.onPressCallback = () => {
+            this.input.keyboard.onPressCallback = null
+            this.state.start('MainGame')
+          }
         },
       },
     })
@@ -173,9 +176,11 @@ export default class Camera extends Phaser.State {
   generateAvatar (frames) {
     const canvas = composeFrames(frames)
     const {game} = this
+    const imageName = `${Date.now() / 1000}.png`
+    // game.cache.addSpriteSheet('avatar', canvas.toDataURL(), {name: imageName}, conf.avatar.width, conf.avatar.height)
     game.load.spritesheet('avatar', canvas.toDataURL(), conf.avatar.width, conf.avatar.height)
     game.load.start()
-
+    game.avatarFileName = imageName
     const avatar = this.add.sprite(game.world.centerX, game.world.centerY, 'avatar')
     avatar.anchor.setTo(0.5, 0.5)
     avatar.animations.add('default')
