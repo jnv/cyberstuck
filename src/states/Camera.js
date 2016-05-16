@@ -4,8 +4,6 @@ import conf from '../config'
 import composeFrames from '../lib/processCapture'
 import style from '../style'
 
-// const States = new Enum(['noFace', 'faceReady', 'countdown', 'recording', 'display'], { freez: true })
-
 const COUNTDOWN_START = 3
 const CAPTURE_INTERVAL = 600
 const CAPTURE_COUNT = conf.avatar.frames
@@ -22,7 +20,7 @@ export default class Camera extends Phaser.State {
     game.onPause.add(this.onPause, this)
     game.onResume.add(this.onResume, this)
 
-    const state = StateMachine.create({
+    const sm = StateMachine.create({
       events: [
         {name: 'start', from: 'none', to: 'Start'},
         {name: 'faceLost', from: ['Start', 'NoFace', 'FaceVisible', 'Countdown'], to: 'NoFace'},
@@ -38,7 +36,7 @@ export default class Camera extends Phaser.State {
           this.camBitmap.visible = true
           this.camBitmap.alpha = 1
           this.camera.start()
-          state.faceLost()
+          sm.faceLost()
         },
         onNoFace: () => {
           // set text
@@ -48,7 +46,7 @@ export default class Camera extends Phaser.State {
           // hide text
           this.overlayText.text = ''
           // move to countdown
-          state.startCountdown()
+          sm.startCountdown()
         },
         onCountdown: () => {
           // start timer
@@ -56,12 +54,12 @@ export default class Camera extends Phaser.State {
           let countdown = COUNTDOWN_START
           this.overlayText.text = countdown
           game.time.events.repeat(1000, COUNTDOWN_START, () => {
-            if (!state.is('Countdown')) {
+            if (!sm.is('Countdown')) {
               return
             }
             countdown--
             if (countdown === 0) {
-              state.startCapture()
+              sm.startCapture()
             } else {
               this.overlayText.text = countdown
             }
@@ -79,7 +77,7 @@ export default class Camera extends Phaser.State {
             count--
             captures.push(this.captureFrame())
             if (count === 0) {
-              state.processCapture(captures)
+              sm.processCapture(captures)
             }
           })
         },
@@ -89,7 +87,7 @@ export default class Camera extends Phaser.State {
           this.camBitmap.clear()
           // this.overlayText.text = TEXTS.processing
           this.generateAvatar(frames)
-          state.startDisplay()
+          sm.startDisplay()
         },
         onleaveProcessing: () => {
           this.overlayText.text = ''
@@ -98,7 +96,7 @@ export default class Camera extends Phaser.State {
         },
       },
     })
-    this.state = state
+    this.sm = sm
   }
 
   preload () {
@@ -139,7 +137,7 @@ export default class Camera extends Phaser.State {
     overlayText.anchor.set(0.5)
     this.overlayText = overlayText
 
-    this.state.start()
+    this.sm.start()
   }
 
   onPause () {
@@ -148,7 +146,7 @@ export default class Camera extends Phaser.State {
   }
   onResume () {
     console.log('resume')
-    if (!this.stateis('Display')) {
+    if (!this.sm.is('Display')) {
       this.camera.start()
     }
   }
@@ -185,24 +183,22 @@ export default class Camera extends Phaser.State {
     this.avatar = avatar
   }
 
-  onTrackingStatus (state) {
-    console.log(state)
-    console.log(this.state.current)
-    if (!this.state.is('NoFace') && !this.state.is('Countdown')) {
+  onTrackingStatus (status) {
+    if (!this.sm.is('NoFace') && !this.sm.is('Countdown')) {
       return
     }
 
-    switch (state) {
+    switch (status) {
       case 'found':
-        if (this.state.is('NoFace')) {
-          this.state.faceFound()
+        if (this.sm.is('NoFace')) {
+          this.sm.faceFound()
         }
         break
       case 'redetecting':
       case 'lost':
       case 'hint':
-        if (!this.state.is('NoFace')) {
-          this.state.faceLost()
+        if (!this.sm.is('NoFace')) {
+          this.sm.faceLost()
         }
         break
       default:

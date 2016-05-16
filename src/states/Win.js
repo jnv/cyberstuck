@@ -3,8 +3,9 @@ const FONT_STYLE = {
   fill: '#fff',
 }
 
-export default class GameOver extends Phaser.State {
-  init ({score}) {
+export default class Win extends Phaser.State {
+  init ({win}) {
+    this.win = win || false
   }
 
   preload () {
@@ -14,7 +15,7 @@ export default class GameOver extends Phaser.State {
   create () {
     const {game} = this
 
-    let textStr = 'GAME OVER'
+    let textStr = 'THE WINNER IS YOU!'
 
     const finalText = this.add.text(game.world.centerX, game.world.centerY, textStr, FONT_STYLE)
     finalText.anchor.set(0.5)

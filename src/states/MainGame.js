@@ -29,7 +29,7 @@ export default class MainGame extends Phaser.State {
 
     const levelText = `LEVEL ${status.level}`
 
-    const state = StateMachine.create({
+    const sm = StateMachine.create({
       events: [
         {name: 'init', from: 'none', to: 'Ready'},
         {name: 'start', from: 'Ready', to: 'Playing'},
@@ -46,19 +46,18 @@ export default class MainGame extends Phaser.State {
           // setup timer for start()
           game.time.events.add(Phaser.Timer.SECOND * 2, () => {
             readyText.destroy()
-            state.start()
+            sm.start()
           })
         },
         onPlaying: () => {
           // start ball
-          console.log('onPlaying')
           this.resetInput()
           this.ball.start()
         },
         onbeforeballLost: () => {
           this.gameStatus.lives -= 1
           if (this.gameStatus.lives < 0) {
-            state.lose()
+            sm.lose()
             return false
           }
           this.hud.update(this.gameStatus)
@@ -66,15 +65,21 @@ export default class MainGame extends Phaser.State {
         },
         onWon: () => {
           // check if there are more levels
+          const nextLevel = this.gameStatus.level + 1
           // either transition to MainGame state with new level or go to Win
+          if (LEVELS[nextLevel]) {
+            const newStatus = {...this.gameStatus, level: nextLevel}
+            this.state.start('MainGame', true, false, newStatus)
+          } else {
+            this.state.start('Win', true, false, this.gameStatus)
+          }
         },
         onLost: () => {
-          console.log('lost')
-          // go to GameOver state
+          this.state.start('GameOver', true, false, this.gameStatus)
         },
       },
     })
-    this.state = state
+    this.sm = sm
   }
 
   preload () {
@@ -113,12 +118,12 @@ export default class MainGame extends Phaser.State {
 
     const ball = new Ball(game, this)
     ball.enablePhysics()
-    ball.events.onOutOfBounds.add(() => this.state.ballLost())
+    ball.events.onOutOfBounds.add(() => this.sm.ballLost())
     this.ball = ball
 
     game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
 
-    this.state.init()
+    this.sm.init()
   }
 
   addScore (amount) {
@@ -134,7 +139,7 @@ export default class MainGame extends Phaser.State {
   }
 
   onKeyPress (char, event) {
-    if (!this.state.is('Playing')) {
+    if (!this.sm.is('Playing')) {
       return
     }
     event.preventDefault()
@@ -152,6 +157,13 @@ export default class MainGame extends Phaser.State {
         break
       case KEYS_MAPPING.buttonOff:
         keys.button = false
+        break
+      // XXX: debugging
+      case 'w':
+        this.sm.win()
+        break
+      case 'q':
+        this.sm.lose()
         break
     }
   }
@@ -180,12 +192,12 @@ export default class MainGame extends Phaser.State {
 
     //  Are there any bricks left?
     if (this.bricks.countLiving() === 0) {
-      this.state.win()
+      this.sm.win()
     }
   }
 
   update () {
-    if (!this.state.is('Playing')) {
+    if (!this.sm.is('Playing')) {
       return
     }
 
