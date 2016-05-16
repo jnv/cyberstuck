@@ -11,6 +11,14 @@ import LEVELS from '../levels'
 // import BrickFactory from '../objects/BrickFactory'
 
 const FRAME_INNER_BORDER = 19
+const PADDLE_MOVE_MULTIPLIER = 7
+
+const KEYS_MAPPING = {
+  left: 'l',
+  right: 'r',
+  buttonOn: 'b',
+  buttonOff: 'o',
+}
 
 export default class MainGame extends Phaser.State {
   init (status = {level: 1, score: 0, lives: 1}) {
@@ -44,6 +52,7 @@ export default class MainGame extends Phaser.State {
         onPlaying: () => {
           // start ball
           console.log('onPlaying')
+          this.resetInput()
           this.ball.start()
         },
         onbeforeballLost: () => {
@@ -98,6 +107,7 @@ export default class MainGame extends Phaser.State {
     game.physics.setBoundsToWorld()
 
     this.paddle = new Paddle(game, this)
+    this.paddle.setBoundaries(worldBounds[0], frame.width - FRAME_INNER_BORDER)
     this.bricks = new BricksGroup(game, this, worldBounds[0], worldBounds[1])
     this.bricks.addBricks(this.levelSpec)
 
@@ -106,12 +116,44 @@ export default class MainGame extends Phaser.State {
     ball.events.onOutOfBounds.add(() => this.state.ballLost())
     this.ball = ball
 
+    game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
+
     this.state.init()
   }
 
   addScore (amount) {
     this.gameStatus.score += amount
     this.hud.update(this.gameStatus)
+  }
+
+  resetInput () {
+    this.keys = {
+      move: 0,
+      button: false,
+    }
+  }
+
+  onKeyPress (char, event) {
+    if (!this.state.is('Playing')) {
+      return
+    }
+    event.preventDefault()
+
+    const {keys} = this
+    switch (char) {
+      case KEYS_MAPPING.left:
+        keys.move -= 1
+        break
+      case KEYS_MAPPING.right:
+        keys.move += 1
+        break
+      case KEYS_MAPPING.buttonOn:
+        keys.button = true
+        break
+      case KEYS_MAPPING.buttonOff:
+        keys.button = false
+        break
+    }
   }
 
   onBallHitPaddle (ball, paddle) {
@@ -143,7 +185,26 @@ export default class MainGame extends Phaser.State {
   }
 
   update () {
-    const {game, ball, paddle, bricks} = this
+    if (!this.state.is('Playing')) {
+      return
+    }
+
+    const {keys, game, ball, paddle, bricks} = this
+
+    if (keys.move !== 0) {
+      paddle.x += (keys.move * PADDLE_MOVE_MULTIPLIER) // FIXME: perhaps we should check time delta
+      keys.move = 0
+    }
+
+    const paddleSpeed = 10
+    if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+      paddle.x -= paddleSpeed
+    } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+      paddle.x += paddleSpeed
+    }
+
+    this.paddle.adjustToBoundaries()
+
     game.physics.arcade.collide(ball, paddle, this.onBallHitPaddle, null, this)
     game.physics.arcade.collide(ball, bricks, this.onBallHitBrick, null, this)
   }

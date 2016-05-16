@@ -20,6 +20,13 @@ export default class Boot extends Phaser.State {
       //game.plugins.add(PhaserDebug)
     }
 
+    game.input.keyboard.addKeyCapture([
+      Phaser.Keyboard.LEFT,
+      Phaser.Keyboard.RIGHT,
+      Phaser.Keyboard.UP,
+      Phaser.Keyboard.DOWN,
+      Phaser.Keyboard.SPACEBAR,
+    ])
 
     this.state.start('Title')
   }

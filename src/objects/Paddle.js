@@ -26,11 +26,29 @@ export default class Paddle extends Phaser.Sprite {
     this.body.bounce.set(1)
     this.body.immovable = true
 
+    this.minX = 0
+    this.maxX = this.width
+
     parent.add.existing(this)
   }
 
   reset () {
     this.x = this.defaultX
     this.y = this.defaultY
+  }
+
+  setBoundaries (minX, maxX) {
+    // account for anchor
+    const halfWidth = this.width / 2
+    this.minX = minX + halfWidth
+    this.maxX = maxX - halfWidth
+  }
+
+  adjustToBoundaries () {
+    if (this.x < this.minX) {
+      this.x = this.minX
+    } else if (this.x > this.maxX) {
+      this.x = this.maxX
+    }
   }
 }
