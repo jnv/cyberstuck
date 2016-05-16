@@ -2,6 +2,10 @@ const PADDLE_OFFSET = 40
 const PADDLE_WIDTH = 84
 const PADDLE_HEIGHT = 13
 
+const ACCEL = 50
+const DRAG = 200
+const MAX_VELOCITY = 200
+
 export default class Paddle extends Phaser.Sprite {
   static preload (game) {
     game.load.spritesheet('paddle', 'assets/paddle.png', PADDLE_WIDTH, PADDLE_HEIGHT)
@@ -23,11 +27,14 @@ export default class Paddle extends Phaser.Sprite {
 
     parent.physics.enable(this, Phaser.Physics.ARCADE)
     this.body.collideWorldBounds = true
-    this.body.bounce.set(1)
+    this.body.bounce.set(0)
     this.body.immovable = true
 
     this.minX = 0
     this.maxX = this.width
+
+    this.body.drag.x = DRAG
+    this.body.maxVelocity.x = MAX_VELOCITY
 
     parent.add.existing(this)
   }
@@ -35,6 +42,28 @@ export default class Paddle extends Phaser.Sprite {
   reset () {
     this.x = this.defaultX
     this.y = this.defaultY
+    this.resetMovement()
+  }
+
+  moveLeft () {
+    const {velocity} = this.body
+    if (velocity.x > 0) {
+      velocity.x = 0
+    }
+    velocity.x -= ACCEL
+  }
+
+  moveRight () {
+    const {velocity} = this.body
+    if (velocity.x < 0) {
+      velocity.x = 0
+    }
+    velocity.x += ACCEL
+  }
+
+  resetMovement () {
+    const {velocity} = this.body
+    velocity.x = 0
   }
 
   setBoundaries (minX, maxX) {

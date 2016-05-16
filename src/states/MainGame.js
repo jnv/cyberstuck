@@ -11,7 +11,6 @@ import LEVELS from '../levels'
 // import BrickFactory from '../objects/BrickFactory'
 
 const FRAME_INNER_BORDER = 19
-const PADDLE_MOVE_MULTIPLIER = 7
 
 const KEYS_MAPPING = {
   left: 'l',
@@ -132,10 +131,7 @@ export default class MainGame extends Phaser.State {
   }
 
   resetInput () {
-    this.keys = {
-      move: 0,
-      button: false,
-    }
+    this.paddle.resetMovement()
   }
 
   onKeyPress (char, event) {
@@ -147,10 +143,10 @@ export default class MainGame extends Phaser.State {
     const {keys} = this
     switch (char) {
       case KEYS_MAPPING.left:
-        keys.move -= 1
+        this.paddle.moveLeft()
         break
       case KEYS_MAPPING.right:
-        keys.move += 1
+        this.paddle.moveRight()
         break
       case KEYS_MAPPING.buttonOn:
         keys.button = true
@@ -201,12 +197,7 @@ export default class MainGame extends Phaser.State {
       return
     }
 
-    const {keys, game, ball, paddle, bricks} = this
-
-    if (keys.move !== 0) {
-      paddle.x += (keys.move * PADDLE_MOVE_MULTIPLIER) // FIXME: perhaps we should check time delta
-      keys.move = 0
-    }
+    const {game, ball, paddle, bricks} = this
 
     const paddleSpeed = 10
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
