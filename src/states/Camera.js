@@ -176,7 +176,7 @@ export default class Camera extends Phaser.State {
   generateAvatar (frames) {
     const canvas = composeFrames(frames)
     const {game} = this
-    const imageName = `${Date.now() / 1000}.png`
+    const imageName = `${Math.floor(Date.now() / 1000)}.png`
     // game.cache.addSpriteSheet('avatar', canvas.toDataURL(), {name: imageName}, conf.avatar.width, conf.avatar.height)
     game.load.spritesheet('avatar', canvas.toDataURL(), conf.avatar.width, conf.avatar.height)
     game.load.start()
