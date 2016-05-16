@@ -58,7 +58,9 @@ export default class Hud extends Phaser.Group {
   }
 
   addAvatar (game) {
-    return game.add.sprite(5, 10, 'avatar')
+    const avatar = game.add.sprite(5, 10, 'avatar')
+    avatar.animations.add('default')
+    return avatar
   }
 
   addLivesText (game) {
@@ -70,6 +72,7 @@ export default class Hud extends Phaser.Group {
   update (state) {
     this.score.text = state.score
     this.lives.text = `× ${state.lives}`
+    this.avatar.animations.play('default', 4, false)
   }
 
 }
