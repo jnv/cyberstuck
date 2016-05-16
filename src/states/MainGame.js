@@ -21,7 +21,7 @@ const KEYS_MAPPING = {
 }
 
 export default class MainGame extends Phaser.State {
-  init (status = {level: 1, score: 0, lives: 1}) {
+  init (status = {level: 1, score: 0, lives: 2}) {
     const {game} = this
 
     this.gameStatus = status
