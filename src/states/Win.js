@@ -21,7 +21,7 @@ export default class Win extends Phaser.State {
     finalText.anchor.set(0.5)
 
     game.input.keyboard.onDownCallback = () => {
-      this.state.start('Title')
+      window.location.reload(false)
     }
   }
 

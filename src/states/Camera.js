@@ -93,6 +93,7 @@ export default class Camera extends Phaser.State {
           this.overlayText.text = ''
         },
         onDisplay: (event, from, to, frames) => {
+          // FIXME: handle jump to next state
         },
       },
     })
