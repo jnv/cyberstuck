@@ -3,14 +3,34 @@ import Webcam from '../lib/HeadCapture'
 import conf from '../config'
 import composeFrames from '../lib/processCapture'
 import style from '../style'
+import PressButtonText from '../objects/PressButtonText'
 
 const COUNTDOWN_START = 3
 const CAPTURE_INTERVAL = 600
 const CAPTURE_COUNT = conf.avatar.frames
 const TEXTS = {
+  start: `To enter the Cyberspace, you will be digitized.
+
+Don't worry, the process is mostly harmless.
+
+Just face the camera and make some faces...
+`,
   wait: 'GET READY...',
   noFace: 'FACE THE CAMERA',
-  processing: 'PROCESSING...',
+  display: `You are now in
+the Cyberspace.
+Get ready to save StuNoMe.
+
+Good Luck!
+`
+,
+}
+
+const INTRO_FONT_STYLE = {
+  ...style.font,
+  fontSize: '18px',
+  wordWrapWidth: 450,
+  wordWrap: true,
 }
 
 export default class Camera extends Phaser.State {
@@ -23,7 +43,8 @@ export default class Camera extends Phaser.State {
     const sm = StateMachine.create({
       events: [
         {name: 'start', from: 'none', to: 'Start'},
-        {name: 'faceLost', from: ['Start', 'NoFace', 'FaceVisible', 'Countdown'], to: 'NoFace'},
+        {name: 'startTracking', from: 'Start', to: 'NoFace'},
+        {name: 'faceLost', from: ['NoFace', 'FaceVisible', 'Countdown'], to: 'NoFace'},
         {name: 'faceFound', from: ['NoFace', 'FaceVisible'], to: 'FaceVisible'},
         {name: 'startCountdown', from: 'FaceVisible', to: 'Countdown'},
         {name: 'startCapture', from: 'Countdown', to: 'Capture'},
@@ -33,10 +54,21 @@ export default class Camera extends Phaser.State {
       ],
       callbacks: {
         onStart: () => {
-          this.camBitmap.visible = true
-          this.camBitmap.alpha = 1
+          this.surface.visible = false
+          const introText = this.add.text(game.world.centerX, 100, TEXTS.start, INTRO_FONT_STYLE)
+          introText.anchor.set(0.5, 0)
+
           this.camera.start()
-          sm.faceLost()
+
+          const button = new PressButtonText(game, this)
+          button.onButtonPress.add(() => {
+            introText.destroy()
+            button.destroy()
+            sm.startTracking()
+          })
+        },
+        onleaveStart: () => {
+          this.surface.visible = true
         },
         onNoFace: () => {
           // set text
@@ -83,8 +115,7 @@ export default class Camera extends Phaser.State {
         },
         onProcessing: (event, from, to, frames) => {
           this.camera.stop()
-          this.camBitmap.visible = false
-          this.camBitmap.clear()
+          this.surface.visible = false
           // this.overlayText.text = TEXTS.processing
           this.generateAvatar(frames)
           sm.startDisplay()
@@ -93,10 +124,13 @@ export default class Camera extends Phaser.State {
           this.overlayText.text = ''
         },
         onDisplay: (event, from, to, frames) => {
-          this.input.keyboard.onPressCallback = () => {
-            this.input.keyboard.onPressCallback = null
+          const text = this.add.text(game.world.centerX, 100, TEXTS.display, INTRO_FONT_STYLE)
+          text.anchor.set(0.5, 0)
+
+          const button = new PressButtonText(game, this)
+          button.onButtonPress.add(() => {
             this.state.start('MainGame')
-          }
+          })
         },
       },
     })
@@ -108,7 +142,12 @@ export default class Camera extends Phaser.State {
   }
 
   create () {
+    // FIXME: add global timeout
+
     const {game} = this
+
+    this.add.sprite(0, 0, 'bg_base')
+
     const camera = new Webcam(game, this)
     this.camera = camera
 
@@ -124,6 +163,7 @@ export default class Camera extends Phaser.State {
 
     this.surface = this.add.sprite(0, 140, camBitmap)
     this.surface.scale.setTo(0.75)
+    this.surface.visible = false
 
     const shutter = this.add.graphics(0, 0)
     shutter.beginFill(0xffffff, 1)
@@ -137,7 +177,7 @@ export default class Camera extends Phaser.State {
       stroke: '#000',
       strokeThickness: 3,
     }
-    const overlayText = this.add.text(game.world.centerX, game.world.centerY, TEXTS.wait, overlayStyle)
+    const overlayText = this.add.text(game.world.centerX, game.world.centerY, '', overlayStyle)
     overlayText.anchor.set(0.5)
     this.overlayText = overlayText
 
