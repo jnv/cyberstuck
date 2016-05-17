@@ -234,35 +234,39 @@ export default class Camera extends Phaser.State {
       return
     }
 
-    switch (status) {
-      case 'found':
-        if (this.sm.is('NoFace')) {
-          this.sm.faceFound()
-        }
-        break
-      case 'redetecting':
-      case 'lost':
-      case 'hint':
-        if (!this.sm.is('NoFace')) {
-          this.sm.faceLost()
-        }
-        break
-      default:
-        // console.log(state)
-        break
+    try {
+      switch (status) {
+        case 'found':
+          if (this.sm.is('NoFace')) {
+            this.sm.faceFound()
+          }
+          break
+        case 'redetecting':
+        case 'lost':
+        case 'hint':
+          if (!this.sm.is('NoFace')) {
+            this.sm.faceLost()
+          }
+          break
+        default:
+          // console.log(state)
+          break
+      }
+    } catch (e) {
+      console.error(e)
     }
   }
 
   onFaceTracking (e) {
     // console.log(e.x, e.y)
-    // // apparently we are already tracking the face
-    // if (this.state.is('NoFace')) {
-    //   try {
-    //     this.state.faceFound()
-    //   } catch (e) {
-
-    //   }
-    // }
+    // apparently we are already tracking the face
+    if (this.sm.is('NoFace')) {
+      try {
+        this.sm.faceFound()
+      } catch (e) {
+        console.error(e)
+      }
+    }
   }
 
   update () {
