@@ -184,6 +184,10 @@ export default class Camera extends Phaser.State {
     this.sm.start()
   }
 
+  shutdown () {
+    this.game.plugins.remove(this.camera)
+  }
+
   onPause () {
     console.log('pause')
     this.camera.stop()

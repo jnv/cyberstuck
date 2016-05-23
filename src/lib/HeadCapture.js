@@ -82,6 +82,7 @@ export default class HeadCapture extends Phaser.Plugin {
 
     if (!this.stream) {
       navigator.getUserMedia({
+        audio: false,
         video: { mandatory: { minWidth: this.width, minHeight: this.height } } },
         this.connectCallback.bind(this), this.errorCallback.bind(this))
       this.addEventListeners()
@@ -92,7 +93,7 @@ export default class HeadCapture extends Phaser.Plugin {
   stop () {
     if (this.stream) {
       this.tracker.stop()
-      this.stream.getTracks().forEach(s => s.stop())
+      this.stream.getTracks().forEach(t => t.stop())
       this.removeEventListeners()
       this.stream = null
     }
