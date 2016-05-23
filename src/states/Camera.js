@@ -60,8 +60,8 @@ export default class Camera extends Phaser.State {
 
           this.camera.start()
 
-          const button = new PressButtonText(game, this)
-          button.onButtonPress.add(() => {
+          const button = new PressButtonText(game, this, 'digitize')
+          button.pressOnce(() => {
             introText.destroy()
             button.destroy()
             sm.startTracking()
@@ -127,8 +127,8 @@ export default class Camera extends Phaser.State {
           const text = this.add.text(game.world.centerX, 100, TEXTS.display, INTRO_FONT_STYLE)
           text.anchor.set(0.5, 0)
 
-          const button = new PressButtonText(game, this)
-          button.onButtonPress.add(() => {
+          const button = new PressButtonText(game, this, 'continue')
+          button.pressOnce(() => {
             this.state.start('MainGame')
           })
         },
@@ -225,6 +225,11 @@ export default class Camera extends Phaser.State {
     avatar.anchor.setTo(0.5, 0.5)
     avatar.animations.add('default')
     avatar.animations.play('default', 1, true)
+
+    const link = document.createElement('a')
+    link.href = canvas.toDataURL()
+    link.download = imageName
+    link.click()
 
     this.avatar = avatar
   }
