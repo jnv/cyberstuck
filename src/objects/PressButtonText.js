@@ -4,7 +4,7 @@ const BUTTON = Phaser.Keyboard.B
 
 const FONT_STYLE = {
   ...style.font,
-  fontSize: '20px',
+  fontSize: '16px',
   // wordWrapWidth: 450,
 }
 
@@ -16,9 +16,8 @@ export default class PressButtonText extends Phaser.Group {
 
     const str = `PRESS BUTTON TO ${what.toUpperCase()}`
 
-    const text = parent.add.text(game.world.centerX, 0, str, FONT_STYLE)
+    const text = parent.add.text(20, 0, str, FONT_STYLE)
     this.add(text)
-    text.anchor.set(0.5, 0)
     this.create(64, 30, 'down')
 
     this.alpha = 0
@@ -28,5 +27,9 @@ export default class PressButtonText extends Phaser.Group {
     this.onButtonPress = input.onDown
 
     parent.add.existing(this)
+  }
+
+  pressOnce (callback) {
+    this.onButtonPress.addOnce(callback)
   }
 }

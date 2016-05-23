@@ -1,7 +1,5 @@
-const FONT_STYLE = {
-  font: '20px PressStart2P',
-  fill: '#fff',
-}
+import style from '../style'
+import PressButtonText from '../objects/PressButtonText'
 
 export default class GameOver extends Phaser.State {
   init ({score}) {
@@ -16,12 +14,12 @@ export default class GameOver extends Phaser.State {
 
     let textStr = 'GAME OVER'
 
-    const finalText = this.add.text(game.world.centerX, game.world.centerY, textStr, FONT_STYLE)
+    const finalText = this.add.text(game.world.centerX, game.world.centerY, textStr, style.font)
     finalText.anchor.set(0.5)
 
-    game.input.keyboard.onDownCallback = () => {
+    new PressButtonText(game, this, 'continue').pressOnce(() => {
       window.location.reload(false)
-    }
+    })
   }
 
   update () {

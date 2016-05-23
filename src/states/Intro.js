@@ -31,16 +31,16 @@ export default class Intro extends Phaser.State {
     const text = this.add.text(game.world.centerX, 100, TEXT, FONT_STYLE)
     text.alpha = 0
     text.anchor.set(0.5, 0)
-    const tween = game.add.tween(text).to({alpha: 1}, 1500, Phaser.Easing.Circular.In, true)
+    const tween = game.add.tween(text).to({alpha: 1}, 200, Phaser.Easing.Circular.In, true)
 
     tween.onComplete.add(() => {
-      game.time.events.add(Phaser.Timer.SECOND * 1, this.readyNextState, this)
+      game.time.events.add(1, this.readyNextState, this)
     })
   }
 
   readyNextState () {
-    const button = new PressButtonText(this.game, this)
-    button.onButtonPress.add(() => {
+    const button = new PressButtonText(this.game, this, 'continue')
+    button.pressOnce(() => {
       this.state.start('Camera')
     })
   }
