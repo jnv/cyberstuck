@@ -1,6 +1,6 @@
 import style from '../style'
 
-const BUTTON = Phaser.Keyboard.B
+const BUTTON = Phaser.Keyboard.SPACEBAR
 
 const FONT_STYLE = {
   ...style.font,

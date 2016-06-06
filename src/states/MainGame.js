@@ -17,6 +17,7 @@ const KEYS_MAPPING = {
   right: 'r',
   buttonOn: 'b',
   buttonOff: 'o',
+  button: ' ',
 }
 
 export default class MainGame extends Phaser.State {
@@ -92,7 +93,7 @@ export default class MainGame extends Phaser.State {
     const {game, gameStatus} = this
 
     game.physics.startSystem(Phaser.Physics.ARCADE)
-    game.physics.arcade.checkCollision.down = false
+    game.physics.arcade.checkCollision.down = true
 
     this.level = new Level(game, this, gameStatus.level)
     this.hud = new Hud(this)
@@ -121,7 +122,7 @@ export default class MainGame extends Phaser.State {
     this.ball = ball
 
     game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
-
+    game.input.mouse.mouseWheelCallback = this.onMouseWheel.bind(this)
     this.sm.init()
   }
 
@@ -132,6 +133,18 @@ export default class MainGame extends Phaser.State {
 
   resetInput () {
     this.paddle.resetMovement()
+  }
+
+  onMouseWheel (e) {
+    e.preventDefault()
+    if (!this.sm.is('Playing')) {
+      return
+    }
+    if (event.deltaY < 0) {
+      this.paddle.moveLeft()
+    } else {
+      this.paddle.moveRight()
+    }
   }
 
   onKeyPress (char, event) {
@@ -153,6 +166,9 @@ export default class MainGame extends Phaser.State {
         break
       case KEYS_MAPPING.buttonOff:
         keys.button = false
+        break
+      case ' ':
+        console.log('button pressed')
         break
       // XXX: debugging
       case 'w':
