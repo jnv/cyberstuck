@@ -2,8 +2,8 @@ const PADDLE_OFFSET = 40
 const PADDLE_WIDTH = 84
 const PADDLE_HEIGHT = 13
 
-const ACCEL = 100
-const DRAG = 500
+const ACCEL = 80
+const DRAG = 450
 const MAX_VELOCITY = 200
 
 export default class Paddle extends Phaser.Sprite {
