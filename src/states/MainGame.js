@@ -93,7 +93,7 @@ export default class MainGame extends Phaser.State {
     const {game, gameStatus} = this
 
     game.physics.startSystem(Phaser.Physics.ARCADE)
-    game.physics.arcade.checkCollision.down = true
+    game.physics.arcade.checkCollision.down = false
 
     this.level = new Level(game, this, gameStatus.level)
     this.hud = new Hud(this)
