@@ -2,8 +2,8 @@ const PADDLE_OFFSET = 40
 const PADDLE_WIDTH = 84
 const PADDLE_HEIGHT = 13
 
-const ACCEL = 80
-const DRAG = 450
+const ACCEL = 275
+const DRAG = 500
 const MAX_VELOCITY = 200
 
 export default class Paddle extends Phaser.Sprite {
@@ -46,19 +46,11 @@ export default class Paddle extends Phaser.Sprite {
   }
 
   moveLeft () {
-    const {velocity} = this.body
-    if (velocity.x > 0) {
-      velocity.x = 0
-    }
-    velocity.x -= ACCEL
+    this.body.velocity.x = -ACCEL
   }
 
   moveRight () {
-    const {velocity} = this.body
-    if (velocity.x < 0) {
-      velocity.x = 0
-    }
-    velocity.x += ACCEL
+    this.body.velocity.x = +ACCEL
   }
 
   resetMovement () {
