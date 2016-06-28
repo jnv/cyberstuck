@@ -1,3 +1,4 @@
+import DetectIdle from '../lib/DetectIdle'
 
 export default class Boot extends Phaser.State {
   preload () {
@@ -25,6 +26,8 @@ export default class Boot extends Phaser.State {
       Phaser.Keyboard.DOWN,
       Phaser.Keyboard.SPACEBAR,
     ])
+
+    game.add.plugin(new DetectIdle(game))
 
     this.state.start('Title')
   }

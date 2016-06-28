@@ -8,6 +8,7 @@ const SUBTITLE_STYLE = {
 
 export default class Title extends Phaser.State {
   init () {
+    global.IDLE_DETECT.disable()
   }
 
   preload () {
@@ -30,6 +31,10 @@ export default class Title extends Phaser.State {
       this.state.start('Intro')
     })
     this.pressButton = pressButton
+  }
+
+  shutdown () {
+    global.IDLE_DETECT.enable()
   }
 
 }
