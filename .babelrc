@@ -1,3 +1,4 @@
 {
-  "presets": ["electron"]
+  "presets": ["electron"],
+  "plugins": ["transform-runtime"]
 }
