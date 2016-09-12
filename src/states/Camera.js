@@ -1,4 +1,4 @@
-import StateMachine from 'state-machine'
+import StateMachine from '../StateMachine'
 import Webcam from '../lib/HeadCapture'
 import conf from '../config'
 import composeFrames from '../lib/processCapture'

@@ -1,4 +1,4 @@
-import StateMachine from 'state-machine'
+import StateMachine from '../StateMachine'
 
 import style from '../style'
 

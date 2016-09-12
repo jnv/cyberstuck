@@ -1,7 +1,6 @@
 import RgbQuant from 'rgbquant'
 import config from '../config'
 import palette from '../palette.json'
-import PIXI from 'pixi.js'
 
 const avatar = config.avatar
 const CANVAS_WIDTH = avatar.width * avatar.frames

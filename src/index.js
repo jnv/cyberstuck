@@ -1,6 +1,8 @@
-import './index.css'
 import WebFont from 'webfontloader'
-import Phaser from 'phaser'
+
+window.PIXI = require('phaser/build/custom/pixi')
+window.p2 = require('phaser/build/custom/p2')
+window.Phaser = require('phaser/build/custom/phaser-split')
 
 const game = new Phaser.Game(480, 640,
   Phaser.CANVAS, // renderer
