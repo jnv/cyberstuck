@@ -25,6 +25,7 @@
     "electron-debug": "^1.0.1"
   },
   "devDependencies": {
+    "babel-preset-electron": "^0.37.8",
     "color": "^0.11.1",
     "devtron": "^1.3.0",
     "electron-packager": "^8.0.0",
