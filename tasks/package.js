@@ -18,12 +18,12 @@ function getArgs () {
   args.push(`--platform=${platform}`)
   args.push(`--arch=${arch}`)
   args.push('--out=./dist')
-  args.push('--asar')
+  // args.push('--asar')
   args.push('--overwrite')
   args.push('--prune')
   args.push('--ignore=/tasks(/|$)')
   args.push('--ignore=/arduino-driver')
-  args.push('--ignore=^/\\.')
+  // args.push('--ignore=^/\\.')
 
   return args
 }
@@ -42,11 +42,11 @@ const spawnOpts = {
 const packager = spawn(cmd, args, spawnOpts)
 
 packager.stdout.on('data', (data) => {
-  console.log(data)
+  console.log(`${data}`)
 })
 
 packager.stderr.on('data', (data) => {
-  console.log(data)
+  console.log(`${data}`)
 })
 
 packager.on('close', (code) => {
