@@ -16,8 +16,10 @@
   },
   "dependencies": {
     "babel-runtime": "^6.11.6",
+    "data-uri-to-buffer": "0.0.4",
     "electron-debug": "^1.0.1",
     "electron-is-dev": "^0.1.2",
+    "electron-storage": "^1.0.6",
     "enum": "^2.3.0",
     "headtrackr": "0.0.1",
     "javascript-state-machine": "^2.3.5",

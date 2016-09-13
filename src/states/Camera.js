@@ -1,3 +1,6 @@
+import {avatarFileName} from '../lib/avatar'
+import {saveImage} from '../lib/storage'
+
 import StateMachine from '../StateMachine'
 import Webcam from '../lib/HeadCapture'
 import conf from '../config'
@@ -220,20 +223,21 @@ export default class Camera extends Phaser.State {
   generateAvatar (frames) {
     const canvas = composeFrames(frames)
     const {game} = this
-    const imageName = `${Math.floor(Date.now() / 1000)}.png`
+    const imageName = avatarFileName()
+
     // game.cache.addSpriteSheet('avatar', canvas.toDataURL(), {name: imageName}, conf.avatar.width, conf.avatar.height)
-    game.load.spritesheet('avatar', canvas.toDataURL(), conf.avatar.width, conf.avatar.height)
+    const dataUrl = canvas.toDataURL()
+    game.load.spritesheet('avatar', dataUrl, conf.avatar.width, conf.avatar.height)
     game.load.start()
+
     game.avatarFileName = imageName
+
     const avatar = this.add.sprite(game.world.centerX, game.world.centerY, 'avatar')
     avatar.anchor.setTo(0.5, 0.5)
     avatar.animations.add('default')
     avatar.animations.play('default', 1, true)
 
-    const link = document.createElement('a')
-    link.href = canvas.toDataURL()
-    link.download = imageName
-    link.click()
+    saveImage(imageName, dataUrl)
 
     this.avatar = avatar
   }
