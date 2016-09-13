@@ -10,14 +10,16 @@ export default class Boot extends Phaser.State {
   create () {
     // Phaser.Canvas.setImageRenderingCrisp(this.game.canvas)
     const {game, scale} = this
-    // scale.pageAlignHorizontally = true
     // scale.pageAlignVertically = true
+    scale.pageAlignHorizontally = true
 
     game.time.desiredFps = 30
 
-    if (process.env.NODE_ENV !== 'development') {
-      scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
-    }
+    /*
+    scale.maxWidth = 480
+    scale.maxHeight = 640
+    */
+    scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
 
     game.input.keyboard.addKeyCapture([
       Phaser.Keyboard.LEFT,
