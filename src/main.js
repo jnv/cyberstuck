@@ -1,6 +1,7 @@
 'use strict'
 // MAIN ELECTRON PROCESS
 const electron = require('electron')
+const isDev = require('electron-is-dev')
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
@@ -14,8 +15,18 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 480, height: 640})
-
+  const winOptions = {
+    minWidth: 480,
+    minHeight: 640,
+    width: 480,
+    height: 640,
+    useContentSize: true,
+    backgroundColor: '#000000',
+    // acceptFirstMouse: true,
+    kiosk: !isDev,
+  }
+  mainWindow = new BrowserWindow(winOptions)
+  mainWindow.setMenu(null)
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`)
 
