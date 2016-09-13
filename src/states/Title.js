@@ -31,6 +31,20 @@ export default class Title extends Phaser.State {
       this.state.start('Intro')
     })
     this.pressButton = pressButton
+
+    game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
+  }
+
+  onKeyPress (char, event) {
+    switch (char) {
+      // XXX: debugging
+      case 'g':
+        this.state.start('MainGame')
+        break
+      case 'c':
+        this.state.start('Camera')
+        break
+    }
   }
 
   shutdown () {
