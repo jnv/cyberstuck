@@ -4,6 +4,8 @@ window.PIXI = require('phaser/build/custom/pixi')
 window.p2 = require('phaser/build/custom/p2')
 window.Phaser = require('phaser/build/custom/phaser-split')
 
+global.IS_DEV = require('electron-is-dev')
+
 const game = new Phaser.Game(480, 640,
   Phaser.CANVAS, // renderer
   '', // parent DOM ID
