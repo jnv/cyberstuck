@@ -1,5 +1,6 @@
 import {avatarFileName} from '../lib/avatar'
 import {saveImage} from '../lib/storage'
+import GameStatus from '../GameStatus'
 
 import StateMachine from '../StateMachine'
 import Webcam from '../lib/HeadCapture'
@@ -132,7 +133,7 @@ export default class Camera extends Phaser.State {
 
           const button = new PressButtonText(game, this, 'continue')
           button.pressOnce(() => {
-            this.state.start('MainGame')
+            this.state.start('MainGame', true, false, this.gameStatus)
           })
         },
       },
@@ -184,6 +185,8 @@ export default class Camera extends Phaser.State {
     overlayText.anchor.set(0.5)
     this.overlayText = overlayText
 
+    this.gameStatus = null
+
     this.sm.start()
   }
 
@@ -230,14 +233,17 @@ export default class Camera extends Phaser.State {
     game.load.spritesheet('avatar', dataUrl, conf.avatar.width, conf.avatar.height)
     game.load.start()
 
-    game.avatarFileName = imageName
-
     const avatar = this.add.sprite(game.world.centerX, game.world.centerY, 'avatar')
     avatar.anchor.setTo(0.5, 0.5)
     avatar.animations.add('default')
     avatar.animations.play('default', 1, true)
 
     saveImage(imageName, dataUrl)
+
+    this.gameStatus = GameStatus({
+      avatar: imageName,
+      avatarData: dataUrl,
+    })
 
     this.avatar = avatar
   }

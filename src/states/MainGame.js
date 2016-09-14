@@ -1,4 +1,5 @@
 import StateMachine from '../StateMachine'
+import GameStatus from '../GameStatus'
 
 import style from '../style'
 
@@ -24,8 +25,12 @@ const KEYS_MAPPING = {
 }
 
 export default class MainGame extends Phaser.State {
-  init (status = {level: 1, score: 0, lives: 2}) {
+  init (status) {
     const {game} = this
+
+    if (!status) {
+      status = GameStatus()
+    }
 
     this.gameStatus = status
     this.levelSpec = LEVELS[status.level]
