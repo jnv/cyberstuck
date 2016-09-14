@@ -1,5 +1,5 @@
-import {avatarFileName} from '../lib/avatar'
-import {saveImage} from '../lib/storage'
+import {generateAvatarId} from '../lib/avatar'
+import {saveAvatar} from '../lib/storage'
 import GameStatus from '../GameStatus'
 
 import StateMachine from '../StateMachine'
@@ -226,7 +226,7 @@ export default class Camera extends Phaser.State {
   generateAvatar (frames) {
     const canvas = composeFrames(frames)
     const {game} = this
-    const imageName = avatarFileName()
+    const avatarId = generateAvatarId()
 
     // game.cache.addSpriteSheet('avatar', canvas.toDataURL(), {name: imageName}, conf.avatar.width, conf.avatar.height)
     const dataUrl = canvas.toDataURL()
@@ -238,14 +238,13 @@ export default class Camera extends Phaser.State {
     avatar.animations.add('default')
     avatar.animations.play('default', 1, true)
 
-    saveImage(imageName, dataUrl)
-
+    this.avatar = avatar
     this.gameStatus = GameStatus({
-      avatar: imageName,
+      avatar: avatarId,
       avatarData: dataUrl,
     })
 
-    this.avatar = avatar
+    return saveAvatar(avatarId, dataUrl)
   }
 
   onTrackingStatus (status) {
