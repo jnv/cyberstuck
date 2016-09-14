@@ -22,6 +22,7 @@ export default class Boot extends Phaser.State {
     */
     scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
 
+    /*
     game.input.keyboard.addKeyCapture([
       Phaser.Keyboard.LEFT,
       Phaser.Keyboard.RIGHT,
@@ -29,6 +30,7 @@ export default class Boot extends Phaser.State {
       Phaser.Keyboard.DOWN,
       Phaser.Keyboard.SPACEBAR,
     ])
+    */
 
     game.add.plugin(new DetectIdle(game))
 
