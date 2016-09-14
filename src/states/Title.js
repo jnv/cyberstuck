@@ -21,7 +21,7 @@ export default class Title extends Phaser.State {
     // this.add.sprite(0, 0, 'bg_base')
     this.add.sprite(0, 0, 'bg_title')
 
-    const logo = this.add.sprite(0, 0, 'logo')
+    this.add.sprite(0, 0, 'logo')
 
     const subtitle = this.add.text(game.world.centerX - 10, 400, 'LOST IN THE NEW MEDIA', SUBTITLE_STYLE)
     subtitle.anchor.set(0.5, 0)
