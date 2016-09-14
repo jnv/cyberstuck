@@ -185,18 +185,24 @@ export default class MainGame extends Phaser.State {
   onBallHitPaddle (ball, paddle) {
     let diff = 0
 
+    // Ball is falling down: reverse the direction
+    const velocity = ball.body.velocity
+    if (velocity.y > 0) {
+      velocity.y = -velocity.y
+    }
+
     if (ball.x < paddle.x) {
       //  Ball is on the left-hand side of the paddle
       diff = paddle.x - ball.x
-      ball.body.velocity.x = (-10 * diff)
+      velocity.x = (-5 * diff)
     } else if (ball.x > paddle.x) {
       //  Ball is on the right-hand side of the paddle
       diff = ball.x - paddle.x
-      ball.body.velocity.x = (10 * diff)
+      velocity.x = (5 * diff)
     } else {
       //  Ball is perfectly in the middle
       //  Add a little random X to stop it bouncing straight up!
-      ball.body.velocity.x = 2 + Math.random() * 8
+      velocity.x = 2 + Math.random() * 8
     }
   }
 
