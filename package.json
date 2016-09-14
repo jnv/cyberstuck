@@ -1,5 +1,5 @@
 {
-  "name": "@jnv/cyberstuck",
+  "name": "cyberstuck",
   "productName": "CyberStuck",
   "private": true,
   "version": "0.0.0",
@@ -23,8 +23,10 @@
     "enum": "^2.3.0",
     "headtrackr": "0.0.1",
     "javascript-state-machine": "^2.3.5",
+    "mkdirp": "^0.5.1",
     "phaser": "^2.6.2",
     "phaser-debug": "^1.1.8",
+    "pify": "^2.3.0",
     "rgbquant": "^1.1.2",
     "webfontloader": "^1.6.26"
   },
