@@ -1,4 +1,5 @@
 const OFFSET_Y = 90
+const MAX_VELOCITY = 1000
 
 export default class Paddle extends Phaser.Sprite {
   static preload (game) {
@@ -18,6 +19,14 @@ export default class Paddle extends Phaser.Sprite {
     this.game.physics.enable(this, Phaser.Physics.ARCADE)
     this.body.collideWorldBounds = true
     this.body.bounce.set(1)
+    this.body.maxVelocity.set(MAX_VELOCITY)
+    // this.body.setCircle(14 / 2) // FIXME: use value derived from width
+  }
+
+  setMaxVelocity (velo) {
+    if (this.body) {
+      this.body.maxVelocity.set(velo)
+    }
   }
 
   reset () {
