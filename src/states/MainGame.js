@@ -8,6 +8,9 @@ import Level from '../objects/Level'
 import BricksGroup from '../objects/BricksGroup'
 import Ball from '../objects/Ball'
 import LEVELS from '../levels'
+
+require('../lib/DebugArcadePhysics')
+
 // import BrickFactory from '../objects/BrickFactory'
 
 const FRAME_INNER_BORDER = 19
@@ -126,6 +129,9 @@ export default class MainGame extends Phaser.State {
     game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
     game.input.mouse.mouseWheelCallback = this.onMouseWheel.bind(this)
     this.sm.init()
+
+    game.plugins.add(Phaser.Plugin.DebugArcadePhysics)
+    this.game.debug.arcade.off()
   }
 
   addScore (amount) {
@@ -179,6 +185,13 @@ export default class MainGame extends Phaser.State {
       case 'q':
         this.sm.lose()
         break
+      case 'd':
+        const debug = this.game.debug.arcade
+        if (debug.config.on) {
+          debug.off()
+        } else {
+          debug.on()
+        }
     }
   }
 
@@ -235,5 +248,4 @@ export default class MainGame extends Phaser.State {
     game.physics.arcade.collide(ball, paddle, this.onBallHitPaddle, null, this)
     game.physics.arcade.collide(ball, bricks, this.onBallHitBrick, null, this)
   }
-
 }
