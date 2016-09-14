@@ -112,7 +112,9 @@ export default class MainGame extends Phaser.State {
     game.physics.setBoundsToWorld()
 
     this.paddle = new Paddle(game, this)
+    this.paddle.enablePhysics()
     this.paddle.setBoundaries(worldBounds[0], frame.width - FRAME_INNER_BORDER)
+
     this.bricks = new BricksGroup(game, this, worldBounds[0], worldBounds[1])
     this.bricks.addBricks(this.levelSpec)
 

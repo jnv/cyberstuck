@@ -25,18 +25,24 @@ export default class Paddle extends Phaser.Sprite {
     this.animations.add('default')
     this.animations.play('default', 2, true)
 
-    parent.physics.enable(this, Phaser.Physics.ARCADE)
+    parent.add.existing(this)
+  }
+
+  enablePhysics () {
+    this.game.physics.enable(this, Phaser.Physics.ARCADE)
     this.body.collideWorldBounds = true
     this.body.bounce.set(0)
     this.body.immovable = true
+    // this.body.moves = false
+    this.body.allowGravity = false
+
+    this.body.mass = 100
 
     this.minX = 0
     this.maxX = this.width
 
     this.body.drag.x = DRAG
     // this.body.maxVelocity.x = MAX_VELOCITY
-
-    parent.add.existing(this)
   }
 
   reset () {
