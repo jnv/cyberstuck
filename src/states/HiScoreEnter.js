@@ -17,6 +17,17 @@ const INITIALS_STYLE = {
   fontSize: '64px',
 }
 
+const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('')
+const INITIALS_COUNT = 3
+
+function iToChar (i) {
+  return ALPHABET[i]
+}
+
+// http://javascript.about.com/od/problemsolving/a/modulobug.htm
+function modulo (a, b) {
+  return ((a % b) + b) % b
+}
 
 export default class HiScoreEnter extends Phaser.State {
   init (status) {
@@ -43,19 +54,25 @@ export default class HiScoreEnter extends Phaser.State {
 
     const letters = []
     const tweens = []
+    const letterIndex = [0, 0, 0]
     const letterBox = 100
 
     const startPos = game.world.centerX - letterBox
 
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < INITIALS_COUNT; i++) {
       const letter = this.add.text(startPos + i * letterBox, game.world.centerY, 'A', INITIALS_STYLE)
+      letter.charIndex = 0 // XXX: modifying class
       letter.anchor.set(0.5)
       letters[i] = letter
-      tweens[i] = this.add.tween(letter).to({alpha: 0}, 300, Phaser.Easing.Quadratic.Out, false, 0, -1, true)
+      tweens[i] = this.add.tween(letter).to({alpha: 0.2}, 300, Phaser.Easing.Quadratic.Out, false, 0, -1, true)
     }
 
+    this.letterIndex = letterIndex
     this.letters = letters
     this.tweens = tweens
+
+    game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
+    game.input.mouse.mouseWheelCallback = this.onMouseWheel.bind(this)
 
     this.letterForward()
   }
@@ -64,20 +81,57 @@ export default class HiScoreEnter extends Phaser.State {
     if (this.currentLetter >= 0) {
       // stop animating last letter
       // set alpha to 1
-      this.tween[this.currentLetter].stop()
+      this.tweens[this.currentLetter].stop()
       this.letters[this.currentLetter].alpha = 1
     }
 
     this.currentLetter++
 
-    if (this.currentLetter > this.letters.length) {
-      return
+    if (this.currentLetter >= this.letters.length) {
+      return this.nextState()
     }
 
-    const letter = this.letters[this.currentLetter]
     const tween = this.tweens[this.currentLetter]
 
     tween.start()
+  }
+
+  letterChange (by) {
+    const letter = this.letters[this.currentLetter]
+    const newIndex = modulo(letter.charIndex + by, ALPHABET.length)
+
+    letter.charIndex = newIndex
+    letter.setText(iToChar(newIndex))
+    letter.alpha = 1
+  }
+
+  getInitials () {
+    return this.letters.map(l => l.text).join('')
+  }
+
+  onKeyPress (char, event) {
+    event.preventDefault()
+    if (char === ' ') {
+      this.letterForward()
+    }
+  }
+
+  onMouseWheel (e) {
+    e.preventDefault()
+    if (event.deltaY < 0) {
+      this.letterChange(-1)
+    } else {
+      this.letterChange(+1)
+    }
+  }
+
+  nextState () {
+    const {gameStatus} = this
+    const initials = this.getInitials()
+    gameStatus.initials = initials
+    console.log(initials)
+    // save hiscore
+    this.state.start('HiScore', true, false, {nextState: 'Finish'})
   }
 
   update () {
