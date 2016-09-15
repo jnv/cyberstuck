@@ -1,13 +1,18 @@
 import {loadHiscore} from '../lib/hiscore'
+import * as avatar from '../lib/avatar'
 import DetectIdle from '../lib/DetectIdle'
 
 export default class Boot extends Phaser.State {
   preload () {
-    loadHiscore()
     this.load.image('bg_base', 'assets/bg.png')
-    this.load.image('avatar', 'assets/avatar-default.png')
-    this.load.image('avatar-default', 'assets/avatar-default.png')
+    this.load.image('avatar', 'assets/avatars/default.png')
     this.load.image('down', 'assets/down.png')
+    const defaultAvatars = avatar.preloadDefaultAvatars(this)
+    loadHiscore()
+      .then(hiscore => avatar.preloadDataUrls(this, hiscore))
+      .then(hiscoreKeys => {
+        this.game.AvatarPool = avatar.AvatarPool(hiscoreKeys, defaultAvatars)
+      })
   }
 
   create () {
@@ -36,6 +41,6 @@ export default class Boot extends Phaser.State {
 
     game.add.plugin(new DetectIdle(game))
 
-    this.state.start('Title')
+    this.state.start('HiScoreEnter')
   }
 }

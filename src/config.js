@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   camera: {
     width: 640,
     height: 480,

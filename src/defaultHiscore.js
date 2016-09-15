@@ -4,7 +4,7 @@ module.exports = [
     score: 9001,
     lives: 2,
     level: 13,
-    avatar: 'avatar-fallback',
+    avatar: 'default',
     avatarData: null,
   },
   {
@@ -12,7 +12,7 @@ module.exports = [
     score: 3333,
     lives: 0,
     level: 7,
-    avatar: 'avatar-fallback',
+    avatar: 'josef',
     avatarData: null,
   },
   {
@@ -20,7 +20,7 @@ module.exports = [
     score: 1000,
     lives: 0,
     level: 5,
-    avatar: 'avatar-fallback',
+    avatar: 'dita',
     avatarData: null,
   },
 ]

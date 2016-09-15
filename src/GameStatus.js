@@ -2,7 +2,7 @@ const DEFAULT_STATUS = {
   score: 0,
   lives: 2,
   level: 1,
-  avatar: 'avatar-fallback',
+  avatar: 'default',
   avatarData: null,
   initials: null,
 }
