@@ -8,10 +8,10 @@ const DEFAULT_STATUS = {
 }
 
 function GameStatus (overrides) {
-  return {
+  return Object.seal({
     ...DEFAULT_STATUS,
     ...overrides,
-  }
+  })
 }
 
 export default GameStatus
