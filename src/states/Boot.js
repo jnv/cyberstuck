@@ -1,7 +1,9 @@
+import {loadHiscore} from '../lib/hiscore'
 import DetectIdle from '../lib/DetectIdle'
 
 export default class Boot extends Phaser.State {
   preload () {
+    loadHiscore()
     this.load.image('bg_base', 'assets/bg.png')
     this.load.image('avatar', 'assets/avatar-default.png')
     this.load.image('avatar-default', 'assets/avatar-default.png')

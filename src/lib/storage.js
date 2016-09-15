@@ -8,7 +8,8 @@ const mkdirp = pify(require('mkdirp'))
 
 const app = require('electron').remote.app
 
-const BASE_DIR = path.join(app.getPath('userData'), 'data')
+const DATA_DIR = 'data'
+const BASE_DIR = path.join(app.getPath('userData'), DATA_DIR)
 const AVATARS_DIR = 'avatars'
 console.log(`Storage base dir is: ${BASE_DIR}`)
 
@@ -32,4 +33,12 @@ function avatarPath (avatarId) {
 export function saveAvatar (avatarId, dataUri) {
   const filePath = avatarPath(avatarId)
   return saveDataUri(filePath, dataUri)
+}
+
+export function loadJson (file) {
+  return storage.get(path.join(DATA_DIR, file))
+}
+
+export function saveJson (file, contents) {
+  return storage.set(path.join(DATA_DIR, file))
 }
