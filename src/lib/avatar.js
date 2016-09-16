@@ -15,6 +15,7 @@ const DEFAULT_AVATARS = [
   'jakub',
   'josef',
   'marta',
+  'tyna',
 ]
 
 export function spriteKey (id) {

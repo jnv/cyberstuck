@@ -1,7 +1,5 @@
 import style from '../style'
 
-const BUTTON = Phaser.Keyboard.SPACEBAR
-
 const FONT_STYLE = {
   ...style.font,
   fontSize: '16px',
@@ -9,6 +7,12 @@ const FONT_STYLE = {
 }
 
 export default class PressButtonText extends Phaser.Group {
+  static thunk (what, callback) {
+    return (game, parent) => {
+      return new PressButtonText(game, parent, what).pressOnce(callback)
+    }
+  }
+
   constructor (game, parent, what = 'start') {
     super(game)
     this.x = 0
