@@ -71,8 +71,8 @@ export default class HiScoreEnter extends Phaser.State {
     this.letters = letters
     this.tweens = tweens
 
-    game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
-    game.input.mouse.mouseWheelCallback = this.onMouseWheel.bind(this)
+    this.input.keyboard.addCallbacks(this, null, null, this.onKeyPress)
+    this.input.mouse.mouseWheelCallback = this.onMouseWheel.bind(this)
 
     this.letterForward()
   }
