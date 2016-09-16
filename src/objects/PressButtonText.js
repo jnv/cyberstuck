@@ -23,13 +23,23 @@ export default class PressButtonText extends Phaser.Group {
     this.alpha = 0
     parent.add.tween(this).to({alpha: 1}, 500, Phaser.Easing.Exponential.Out, true, 0, -1, true)
 
+    /*
     const input = parent.input.keyboard.addKey(BUTTON)
     this.onButtonPress = input.onDown
+    */
+    parent.input.keyboard.addCallbacks(this, null, null, this.onKeyPress)
 
     parent.add.existing(this)
   }
 
+  onKeyPress () {
+    if (this.callback && !this.fired) {
+      this.callback()
+      this.fired = true
+    }
+  }
+
   pressOnce (callback) {
-    this.onButtonPress.addOnce(callback)
+    this.callback = callback
   }
 }
