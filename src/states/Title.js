@@ -6,6 +6,8 @@ const SUBTITLE_STYLE = {
   fontSize: '16px',
 }
 
+const TITLE_TIMEOUT = 7000
+
 export default class Title extends Phaser.State {
   init () {
     global.IDLE_DETECT.disable()
@@ -29,6 +31,7 @@ export default class Title extends Phaser.State {
     const pressButtonText = new PressButtonText(game, this, 'start')
 
     this.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
+    this.time.events.add(TITLE_TIMEOUT, this.nextIdleState, this)
   }
 
   onKeyPress (char, event) {
@@ -44,6 +47,16 @@ export default class Title extends Phaser.State {
         this.state.start('Intro')
         break
     }
+  }
+
+  nextIdleState () {
+    const {game} = this
+    const thunk = PressButtonText.thunk('start', () => game.state.start('Intro'))
+    this.state.start('HiScore', true, false, {
+      timeout: 10000,
+      nextState: 'Title',
+      pressTextThunk: thunk,
+    })
   }
 
   shutdown () {

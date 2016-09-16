@@ -2,8 +2,8 @@ import style from '../style'
 import PressButtonText from '../objects/PressButtonText'
 
 export default class Win extends Phaser.State {
-  init ({win}) {
-    this.win = win || false
+  init (gameStatus) {
+    this.gameStatus = gameStatus
   }
 
   preload () {
@@ -19,7 +19,7 @@ export default class Win extends Phaser.State {
     finalText.anchor.set(0.5)
 
     new PressButtonText(game, this, 'continue').pressOnce(() => {
-      window.location.reload(false)
+      this.state.start('HiScoreEnter', true, false, this.gameStatus)
     })
   }
 

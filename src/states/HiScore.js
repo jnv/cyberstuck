@@ -30,6 +30,8 @@ export default class HiScore extends Phaser.State {
       highlight: null,
       ...options,
     }
+
+    global.IDLE_DETECT.disable()
   }
 
   preload () {
@@ -84,6 +86,10 @@ export default class HiScore extends Phaser.State {
 
   nextState () {
     this.state.start(this.options.nextState, true, false)
+  }
+
+  shutdown () {
+    global.IDLE_DETECT.enable()
   }
 }
 

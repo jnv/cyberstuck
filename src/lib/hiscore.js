@@ -61,7 +61,7 @@ export function getHiscore (onlyTop = true) {
 }
 
 export function hasHiscore (score) {
-  if (score === 0) {
+  if (!score) {
     return false
   }
   const index = hiscorePosition(score)

@@ -1,6 +1,6 @@
 import style from '../style'
 import GameStatus from '../GameStatus'
-import {addToHiscore} from '../lib/hiscore'
+import {hasHiscore, addToHiscore} from '../lib/hiscore'
 const TEXT = `CONGRATULATIONS!
 You made your mark in the Cyberspace.
 
@@ -36,7 +36,11 @@ export default class HiScoreEnter extends Phaser.State {
     }
 
     this.gameStatus = status
-    console.log(this.gameStatus)
+
+    if (!hasHiscore(status.score)) {
+      console.log('Entered HiScoreEmter state without hiscore, skipping')
+      this.state.start('HiScore', true, false, {nextState: 'Finish'})
+    }
   }
 
   preload () {
