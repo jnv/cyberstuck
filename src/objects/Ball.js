@@ -1,5 +1,5 @@
 const OFFSET_Y = 90
-const MAX_VELOCITY = 1000
+const MAX_VELOCITY = 200
 
 export default class Paddle extends Phaser.Sprite {
   static preload (game) {
