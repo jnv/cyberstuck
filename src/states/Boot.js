@@ -41,6 +41,6 @@ export default class Boot extends Phaser.State {
 
     game.add.plugin(new DetectIdle(game))
 
-    this.state.start('HiScoreEnter')
+    this.state.start('Title')
   }
 }

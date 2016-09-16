@@ -38,6 +38,15 @@ export function preloadDefaultAvatars (game) {
   return keys
 }
 
+export function forceLoadAvatar (game, data, setAsDefault = true) {
+  const key = spriteKey(data.avatar)
+  game.load.spritesheet(key, data.avatarData, config.width, config.height)
+  if (setAsDefault) {
+    game.load.spritesheet('avatar', data.avatarData, config.width, config.height)
+  }
+  game.load.start()
+}
+
 export function preloadDataUrls (game, hiscoreObjs) {
   const keys = []
   hiscoreObjs.forEach(obj => {

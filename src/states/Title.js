@@ -26,13 +26,9 @@ export default class Title extends Phaser.State {
     const subtitle = this.add.text(game.world.centerX - 10, 400, 'LOST IN THE NEW MEDIA', SUBTITLE_STYLE)
     subtitle.anchor.set(0.5, 0)
 
-    const pressButton = new PressButtonText(game, this, 'start')
-    pressButton.onButtonPress.add(() => {
-      this.state.start('Intro')
-    })
-    this.pressButton = pressButton
+    const pressButtonText = new PressButtonText(game, this, 'start')
 
-    game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
+    this.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
   }
 
   onKeyPress (char, event) {
@@ -43,6 +39,9 @@ export default class Title extends Phaser.State {
         break
       case 'c':
         this.state.start('Camera')
+        break
+      case ' ': // XXX: this should be handled by button...
+        this.state.start('Intro')
         break
     }
   }

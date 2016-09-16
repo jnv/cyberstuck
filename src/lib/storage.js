@@ -40,5 +40,5 @@ export function loadJson (file) {
 }
 
 export function saveJson (file, contents) {
-  return storage.set(path.join(DATA_DIR, file))
+  return storage.set(path.join(DATA_DIR, file), contents)
 }

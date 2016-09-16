@@ -31,7 +31,6 @@ export default class PressButtonText extends Phaser.Group {
     const input = parent.input.keyboard.addKey(BUTTON)
     this.onButtonPress = input.onDown
     */
-    parent.input.keyboard.addCallbacks(this, null, null, this.onKeyPress)
 
     parent.add.existing(this)
   }
@@ -44,6 +43,7 @@ export default class PressButtonText extends Phaser.Group {
   }
 
   pressOnce (callback) {
+    this.game.input.keyboard.addCallbacks(this, null, null, this.onKeyPress)
     this.callback = callback
   }
 }

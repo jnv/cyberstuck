@@ -1,4 +1,4 @@
-import {generateAvatarId} from '../lib/avatar'
+import {generateAvatarId, forceLoadAvatar} from '../lib/avatar'
 import {saveAvatar} from '../lib/storage'
 import GameStatus from '../GameStatus'
 
@@ -230,19 +230,19 @@ export default class Camera extends Phaser.State {
 
     // game.cache.addSpriteSheet('avatar', canvas.toDataURL(), {name: imageName}, conf.avatar.width, conf.avatar.height)
     const dataUrl = canvas.toDataURL()
-    game.load.spritesheet('avatar', dataUrl, conf.avatar.width, conf.avatar.height)
-    game.load.start()
+
+    const gameStatus = GameStatus({
+      avatar: avatarId,
+      avatarData: dataUrl,
+    })
+    this.gameStatus = gameStatus
+
+    forceLoadAvatar(this, gameStatus, true)
 
     const avatar = this.add.sprite(game.world.centerX, game.world.centerY, 'avatar')
     avatar.anchor.setTo(0.5, 0.5)
     avatar.animations.add('default')
     avatar.animations.play('default', 1, true)
-
-    this.avatar = avatar
-    this.gameStatus = GameStatus({
-      avatar: avatarId,
-      avatarData: dataUrl,
-    })
 
     return saveAvatar(avatarId, dataUrl)
   }
