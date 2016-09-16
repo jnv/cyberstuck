@@ -6,7 +6,7 @@ let LOADED = false
 let HISCORE
 
 const ENTRIES_TOP = 10
-const ENTRIES_CUTOFF = 50
+const ENTRIES_CUTOFF = 20
 
 export async function loadHiscore () {
   if (LOADED) {
