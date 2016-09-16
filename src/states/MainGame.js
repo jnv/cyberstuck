@@ -131,12 +131,13 @@ export default class MainGame extends Phaser.State {
     this.bricks = new BricksGroup(game, this, worldBounds[0], worldBounds[1])
     this.bricks.addBricks(this.levelSpec)
 
+    this.bonuses = this.add.group('bonuses', false, true, Phaser.Physics.ARCADE)
+
     const ball = new Ball(game, this)
     ball.enablePhysics()
     ball.events.onOutOfBounds.add(() => this.sm.ballLost())
     this.ball = ball
 
-    this.bonuses = this.add.group('bonuses', false, true, Phaser.Physics.ARCADE)
 
     game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
     game.input.mouse.mouseWheelCallback = this.onMouseWheel.bind(this)
