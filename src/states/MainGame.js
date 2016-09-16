@@ -8,11 +8,15 @@ import Paddle from '../objects/Paddle'
 import Level from '../objects/Level'
 import BricksGroup from '../objects/BricksGroup'
 import Ball from '../objects/Ball'
+import Avatar from '../objects/Avatar'
 import LEVELS from '../levels'
 
 require('../lib/DebugArcadePhysics')
 
 // import BrickFactory from '../objects/BrickFactory'
+
+const BRICK_SCORE = 10
+const BONUS_SCORE = 25
 
 const FRAME_INNER_BORDER = 19
 
@@ -63,6 +67,7 @@ export default class MainGame extends Phaser.State {
           this.ball.start()
         },
         onbeforeballLost: () => {
+          this.resetBonuses()
           this.gameStatus.lives -= 1
           if (this.gameStatus.lives < 0) {
             sm.lose()
@@ -130,6 +135,8 @@ export default class MainGame extends Phaser.State {
     ball.enablePhysics()
     ball.events.onOutOfBounds.add(() => this.sm.ballLost())
     this.ball = ball
+
+    this.bonuses = this.add.group('bonuses', false, true, Phaser.Physics.ARCADE)
 
     game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
     game.input.mouse.mouseWheelCallback = this.onMouseWheel.bind(this)
@@ -212,11 +219,11 @@ export default class MainGame extends Phaser.State {
     if (ball.x < paddle.x) {
       //  Ball is on the left-hand side of the paddle
       diff = paddle.x - ball.x
-      velocity.x = (-5 * diff)
+      velocity.x = (-7 * diff)
     } else if (ball.x > paddle.x) {
       //  Ball is on the right-hand side of the paddle
       diff = ball.x - paddle.x
-      velocity.x = (5 * diff)
+      velocity.x = (7 * diff)
     } else {
       //  Ball is perfectly in the middle
       //  Add a little random X to stop it bouncing straight up!
@@ -226,7 +233,12 @@ export default class MainGame extends Phaser.State {
 
   onBallHitBrick (ball, brick) {
     brick.damage(1)
-    this.addScore(10)
+    if (!brick.alive) {
+      this.addScore(BRICK_SCORE)
+      if (brick.hasBonus()) {
+        this.spawnBonus(brick.getBounds())
+      }
+    }
 
     //  Are there any bricks left?
     if (this.bricks.countLiving() === 0) {
@@ -234,12 +246,34 @@ export default class MainGame extends Phaser.State {
     }
   }
 
+  onPaddleTouchBonus (paddle, bonus) {
+    bonus.kill()
+    this.addScore(bonus.score)
+  }
+
+  resetBonuses () {
+    this.bonuses.forEachAlive(b => b.kill())
+  }
+
+  spawnBonus (bounds) {
+    const {game} = this
+    const x = bounds.centerX
+    const y = bounds.centerY
+    const bonus = new Avatar(this, x, y, game.AvatarPool.allocate())
+    bonus.anchor.set(0.5)
+    bonus.scale.set(0.6)
+    bonus.score = BONUS_SCORE
+    this.bonuses.add(bonus)
+    this.game.physics.enable(bonus, Phaser.Physics.ARCADE)
+    bonus.body.gravity.y = 12
+  }
+
   update () {
     if (!this.sm.is('Playing')) {
       return
     }
 
-    const {game, ball, paddle, bricks} = this
+    const {game, ball, paddle, bricks, bonuses} = this
 
     const paddleSpeed = 10
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
@@ -252,5 +286,6 @@ export default class MainGame extends Phaser.State {
 
     game.physics.arcade.collide(ball, paddle, this.onBallHitPaddle, null, this)
     game.physics.arcade.collide(ball, bricks, this.onBallHitBrick, null, this)
+    game.physics.arcade.overlap(paddle, bonuses, this.onPaddleTouchBonus, null, this)
   }
 }

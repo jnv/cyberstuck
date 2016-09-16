@@ -27,15 +27,12 @@ function defaultAvatarPath (id) {
 }
 
 export function preloadDefaultAvatars (game) {
-  const keys = []
-
   DEFAULT_AVATARS.forEach(id => {
     const key = spriteKey(id)
     game.load.spritesheet(key, defaultAvatarPath(id), config.width, config.height)
-    keys.push(key)
   })
 
-  return keys
+  return DEFAULT_AVATARS
 }
 
 export function forceLoadAvatar (game, data, setAsDefault = true) {
@@ -56,7 +53,7 @@ export function preloadDataUrls (game, hiscoreObjs) {
 
     const key = spriteKey(obj.avatar)
     game.load.spritesheet(key, obj.avatarData, config.width, config.height)
-    keys.push(key)
+    keys.push(obj.avatar)
   })
 
   return keys

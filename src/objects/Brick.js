@@ -17,4 +17,8 @@ export default class Paddle extends Phaser.Sprite {
     this.body.mass = 5
   }
 
+  hasBonus () {
+    return true
+  }
+
 }
