@@ -28,6 +28,7 @@ export default class DetectIdle extends Phaser.Plugin {
 
   onTimeout () {
     console.log('Reached timeout, reloading')
+    this.disable()
     window.location.reload(false)
   }
 
