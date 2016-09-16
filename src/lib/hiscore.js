@@ -20,7 +20,6 @@ export async function loadHiscore () {
     HISCORE = require('../defaultHiscore')
   }
   LOADED = true
-  console.log('hiscore loaded', HISCORE)
   return HISCORE
 }
 
