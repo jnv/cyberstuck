@@ -8,23 +8,28 @@ let HISCORE
 const ENTRIES_TOP = 10
 const ENTRIES_CUTOFF = 20
 
-export async function loadHiscore () {
+export function loadHiscore () {
   if (LOADED) {
     return HISCORE
   }
 
-  try {
-    HISCORE = await loadJson(FILE_NAME)
-  } catch (e) {
-    console.log(e)
-    HISCORE = require('../defaultHiscore')
-  }
-  LOADED = true
-  return HISCORE
+  return loadJson(FILE_NAME)
+    .then(data => {
+      HISCORE = data
+    })
+    .catch(e => {
+      console.log(e)
+      console.log('Loading default hiscore')
+      HISCORE = require('../defaultHiscore')
+    })
+    .then(() => {
+      LOADED = true
+      return HISCORE
+    })
 }
 
-async function saveHiscore () {
-  await saveJson(FILE_NAME, HISCORE.slice(0, ENTRIES_CUTOFF))
+function saveHiscore () {
+  return saveJson(FILE_NAME, HISCORE.slice(0, ENTRIES_CUTOFF))
 }
 
 function hiscorePosition (score) {
