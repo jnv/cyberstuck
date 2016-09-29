@@ -7,6 +7,8 @@ const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
+app.commandLine.appendSwitch('max_old_space_size', '1024')
+
 require('electron-debug')({showDevTools: true})
 
 // Keep a global reference of the window object, if you don't, the window will
