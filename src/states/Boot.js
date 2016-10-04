@@ -1,4 +1,4 @@
-import {loadHiscore} from '../lib/hiscore'
+import {getHiscore} from '../lib/hiscore'
 import * as avatar from '../lib/avatar'
 import DetectIdle from '../lib/DetectIdle'
 
@@ -8,7 +8,7 @@ export default class Boot extends Phaser.State {
     this.load.image('avatar', 'assets/avatars/default.png')
     this.load.image('down', 'assets/down.png')
     const defaultAvatars = avatar.preloadDefaultAvatars(this)
-    loadHiscore()
+    getHiscore(20)
       .then(hiscore => avatar.preloadDataUrls(this, hiscore))
       .then(hiscoreKeys => {
         this.game.AvatarPool = avatar.AvatarPool(hiscoreKeys, defaultAvatars)

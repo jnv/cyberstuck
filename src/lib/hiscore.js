@@ -1,35 +1,31 @@
 import sortedIndexBy from 'lodash/sortedIndexBy'
-import {loadJson, saveJson} from './storage'
-const FILE_NAME = 'hiscore.json'
-
-let LOADED = false
-let HISCORE
+import GameDb from './db'
 
 const ENTRIES_TOP = 10
-const ENTRIES_CUTOFF = 20
 
-export function loadHiscore () {
-  if (LOADED) {
-    return HISCORE
-  }
+const DB = GameDb()
 
-  return loadJson(FILE_NAME)
-    .then(data => {
-      HISCORE = data
-    })
-    .catch(e => {
-      console.log(e)
-      console.log('Loading default hiscore')
-      HISCORE = require('../defaultHiscore')
-    })
-    .then(() => {
-      LOADED = true
-      return HISCORE
-    })
+function hiscoreCollection (limit = null) {
+  return DB
+    .orderBy('score')
+    .and(item => item.initials)
+    .reverse()
+    .limit(limit)
 }
 
-function saveHiscore () {
-  return saveJson(FILE_NAME, HISCORE.slice(0, ENTRIES_CUTOFF))
+export function addGame (gameStatus, finished = true) {
+  if (finished) {
+    gameStatus.finishedAt = Date.now()
+  }
+  return DB.add(gameStatus)
+}
+
+export function addToHiscore (gameStatus) {
+  return addGame(gameStatus).then(() => gameStatus.id)
+}
+
+export function getHiscore (limit = 10) {
+  return hiscoreCollection(limit).toArray()
 }
 
 function hiscorePosition (score) {
@@ -37,32 +33,9 @@ function hiscorePosition (score) {
     score = {score}
   }
 
-  return sortedIndexBy(HISCORE, score, o => -o.score)
-}
+  const entries = getHiscore(ENTRIES_TOP)
 
-export function addToHiscore (item) {
-  if (!item.score && item.score !== 0) {
-    throw new Error('Expected object to have property score')
-  }
-
-  const index = hiscorePosition(item)
-  console.log(`adding hiscore at position ${index}`)
-
-  HISCORE.splice(index, 0, item)
-
-  console.log(HISCORE)
-
-  saveHiscore()
-
-  return index
-}
-
-export function getHiscore (onlyTop = true) {
-  if (onlyTop) {
-    return HISCORE.slice(0, ENTRIES_TOP)
-  }
-
-  return HISCORE
+  return sortedIndexBy(entries, score, o => -o.score)
 }
 
 export function hasHiscore (score) {
@@ -72,4 +45,12 @@ export function hasHiscore (score) {
   const index = hiscorePosition(score)
 
   return index < ENTRIES_TOP
+}
+
+export function hasHiscoreOrSave (gameStatus) {
+  if (hasHiscore) {
+    return Promise.resolve(true)
+  }
+
+  return addGame(gameStatus).then(() => false)
 }

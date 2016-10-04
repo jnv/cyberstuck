@@ -134,8 +134,9 @@ export default class HiScoreEnter extends Phaser.State {
     const initials = this.getInitials()
     gameStatus.initials = initials
     console.log(initials)
-    const insertedIndex = addToHiscore(gameStatus)
-    this.state.start('HiScore', true, false, {nextState: 'Finish', highlight: insertedIndex})
+    addToHiscore(gameStatus).then(insertedIndex => {
+      this.state.start('HiScore', true, false, {nextState: 'Finish', highlight: insertedIndex})
+    })
   }
 
   update () {

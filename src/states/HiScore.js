@@ -46,16 +46,18 @@ export default class HiScore extends Phaser.State {
     const title = this.add.text(game.world.centerX, style.canvasBorder, 'HI-SCORES', style.fontTitle)
     title.anchor.set(0.5, 0)
 
-    const scores = getHiscore()
-    for (var i = scores.length - 1; i >= 0; i--) {
-      const data = scores[i]
-      const row = this.add.group()
-      row.x = H_MARGIN
-      row.y = (ROW_MARGIN + ROW_HEIGHT) * i + TOP_MARGIN
-      this.addAvatar(row, data.avatar, i)
-      this.addInitials(row, data.initials)
-      this.addScore(row, data.score)
-    }
+    getHiscore()
+      .then(scores => {
+        for (var i = scores.length - 1; i >= 0; i--) {
+          const data = scores[i]
+          const row = this.add.group()
+          row.x = H_MARGIN
+          row.y = (ROW_MARGIN + ROW_HEIGHT) * i + TOP_MARGIN
+          this.addAvatar(row, data.avatar, i)
+          this.addInitials(row, data.initials)
+          this.addScore(row, data.score)
+        }
+      })
 
     if (options.timeout && this.options.nextState) {
       this.time.events.add(this.options.timeout, this.nextState, this)
