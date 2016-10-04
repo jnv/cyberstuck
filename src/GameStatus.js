@@ -1,3 +1,5 @@
+import cuid from 'cuid'
+
 const DEFAULT_STATUS = {
   score: 0,
   lives: 2,
@@ -5,12 +7,15 @@ const DEFAULT_STATUS = {
   avatar: 'default',
   avatarData: null,
   initials: null,
+  finishedAt: null,
 }
 
 function GameStatus (overrides) {
   return Object.seal({
     ...DEFAULT_STATUS,
     ...overrides,
+    startedAt: Date.now(),
+    id: cuid(),
   })
 }
 
