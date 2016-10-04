@@ -16,6 +16,7 @@
   "dependencies": {
     "babel-runtime": "^6.11.6",
     "data-uri-to-buffer": "0.0.4",
+    "dexie": "^1.4.2",
     "electron-compile": "^4.0.0",
     "electron-debug": "^1.0.1",
     "electron-is-dev": "^0.1.2",
