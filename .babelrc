@@ -1,4 +1,5 @@
 {
-  "presets": ["electron", "es2017"],
+  "presets": ["latest-minimal"],
+  "plugins": ["transform-object-rest-spread"],
   "sourceMaps": "inline"
 }
