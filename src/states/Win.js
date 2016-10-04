@@ -18,6 +18,7 @@ export default class Win extends Phaser.State {
     const finalText = this.add.text(game.world.centerX, game.world.centerY, textStr, style.font)
     finalText.anchor.set(0.5)
 
+    // FIXME: this assumes winner has hiscore
     new PressButtonText(game, this, 'continue').pressOnce(() => {
       this.state.start('HiScoreEnter', true, false, this.gameStatus)
     })

@@ -1,6 +1,6 @@
 import style from '../style'
 import PressButtonText from '../objects/PressButtonText'
-import {hasHiscore} from '../lib/hiscore'
+import {hasHiscoreOrSave} from '../lib/hiscore'
 
 const HISCORE_FONT = {
   ...style.font,
@@ -26,14 +26,17 @@ export default class GameOver extends Phaser.State {
     const finalText = this.add.text(game.world.centerX, game.world.centerY - 40, textStr, style.font)
     finalText.anchor.set(0.5)
 
-    if (hasHiscore(this.gameStatus.score)) {
-      this.addHiscoreText()
-      nextState = 'HiScoreEnter'
-    }
-
-    new PressButtonText(game, this, 'continue').pressOnce(() => {
-      this.state.start(nextState, true, false, this.gameStatus)
-    })
+    // Fixme: gameStatus save could be moved to HiScoreEnter
+    hasHiscoreOrSave(this.gameStatus)
+      .then(has => {
+        if (has) {
+          this.addHiscoreText()
+          nextState = 'HiScoreEnter'
+        }
+        new PressButtonText(game, this, 'continue').pressOnce(() => {
+          this.state.start(nextState, true, false, this.gameStatus)
+        })
+      })
   }
 
   addHiscoreText () {
