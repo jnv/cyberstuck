@@ -4,13 +4,13 @@
   "version": "0.0.0",
   "description": "",
   "engines": {
-    "electron": "1.4.1"
+    "electron": "1.4.5"
   },
   "main": "src/main.js",
   "scripts": {
     "clean": "rimraf dist/ .cache",
     "build": "npm run build:linux",
-    "build:linux": "NODE_ENV=production node_modules/.bin/electron-packager-compile . cyberstuck --version=1.4.1 --platform=linux --arch=x64 --out=./dist --overwrite --prune --asar",
+    "build:linux": "NODE_ENV=production node_modules/.bin/electron-packager-compile . cyberstuck --version=1.4.5 --platform=linux --arch=x64 --out=./dist --overwrite --prune --asar",
     "start": "electron ."
   },
   "dependencies": {
