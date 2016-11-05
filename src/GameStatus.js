@@ -8,6 +8,7 @@ const DEFAULT_STATUS = {
   avatarData: null,
   initials: null,
   finishedAt: null,
+  rankedScore: 0,
 }
 
 function GameStatus (overrides) {

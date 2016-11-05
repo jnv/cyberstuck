@@ -7,9 +7,7 @@ const DB = GameDb()
 
 function hiscoreCollection (limit = null) {
   return DB
-    .orderBy('score')
-    .and(item => item.initials)
-    .reverse()
+    .orderBy('rankedScore')
     .limit(limit)
 }
 

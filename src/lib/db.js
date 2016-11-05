@@ -4,7 +4,7 @@ import GameStatus from '../GameStatus'
 const DB_NAME = 'game'
 
 const schemas = {
-  'games': 'id,startedAt,score,initials',
+  'games': 'id,startedAt,rankedScore,initials',
 }
 
 function defaultHiscore () {
@@ -17,6 +17,12 @@ export default function GameDb () {
   const db = new Dexie(DB_NAME)
 
   db.version(1).stores(schemas)
+
+  db.games.hook('creating', (primKey, obj, trans) => {
+    if (obj.score > 0 && obj.initials) {
+      obj.rankedScore = Number.MAX_VALUE - obj.score
+    }
+  })
 
   db.on('populate', () => {
     console.log('Populating database')
