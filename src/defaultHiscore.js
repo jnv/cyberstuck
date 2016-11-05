@@ -1,7 +1,7 @@
 module.exports = [
   {
     initials: 'SNM',
-    score: 9001,
+    score: 10,
     lives: 2,
     level: 13,
     avatar: 'default',
@@ -10,7 +10,7 @@ module.exports = [
   },
   {
     initials: 'JSF',
-    score: 2000,
+    score: 9,
     lives: 0,
     level: 8,
     avatar: 'josef',
@@ -19,7 +19,7 @@ module.exports = [
   },
   {
     initials: 'DIT',
-    score: 1500,
+    score: 8,
     lives: 0,
     level: 7,
     avatar: 'dita',
@@ -27,7 +27,7 @@ module.exports = [
   },
   {
     initials: 'KUB',
-    score: 1000,
+    score: 7,
     lives: 0,
     level: 7,
     avatar: 'jakub',
@@ -35,7 +35,7 @@ module.exports = [
   },
   {
     initials: 'DAN',
-    score: 500,
+    score: 6,
     lives: 0,
     level: 5,
     avatar: 'dan',
@@ -43,7 +43,7 @@ module.exports = [
   },
   {
     initials: 'MAR',
-    score: 400,
+    score: 5,
     lives: 0,
     level: 4,
     avatar: 'marta',
@@ -51,7 +51,7 @@ module.exports = [
   },
   {
     initials: 'FRA',
-    score: 300,
+    score: 4,
     lives: 0,
     level: 4,
     avatar: 'frantisek',
@@ -59,7 +59,7 @@ module.exports = [
   },
   {
     initials: 'JNV',
-    score: 200,
+    score: 3,
     lives: 0,
     level: 4,
     avatar: 'honza',
@@ -67,7 +67,7 @@ module.exports = [
   },
   {
     initials: 'JAK',
-    score: 100,
+    score: 2,
     lives: 0,
     level: 4,
     avatar: 'jak',
@@ -75,7 +75,7 @@ module.exports = [
   },
   {
     initials: 'TYN',
-    score: 50,
+    score: 1,
     lives: 0,
     level: 4,
     avatar: 'tyna',
