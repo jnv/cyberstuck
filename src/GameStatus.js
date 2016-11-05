@@ -9,6 +9,7 @@ const DEFAULT_STATUS = {
   initials: null,
   finishedAt: null,
   rankedScore: 0,
+  won: false,
 }
 
 function GameStatus (overrides) {

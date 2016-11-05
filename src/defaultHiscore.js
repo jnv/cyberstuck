@@ -6,6 +6,7 @@ module.exports = [
     level: 13,
     avatar: 'default',
     avatarData: null,
+    won: true,
   },
   {
     initials: 'JSF',
@@ -14,6 +15,7 @@ module.exports = [
     level: 8,
     avatar: 'josef',
     avatarData: null,
+    won: true,
   },
   {
     initials: 'DIT',
