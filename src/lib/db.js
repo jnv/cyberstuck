@@ -20,7 +20,7 @@ export default function GameDb () {
 
   db.games.hook('creating', (primKey, obj, trans) => {
     if (obj.score > 0 && obj.initials) {
-      obj.rankedScore = Number.MAX_VALUE - obj.score
+      obj.rankedScore = -obj.score
     }
   })
 
