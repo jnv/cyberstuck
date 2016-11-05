@@ -1,6 +1,7 @@
 import {getHiscore} from '../lib/hiscore'
 import * as avatar from '../lib/avatar'
 import DetectIdle from '../lib/DetectIdle'
+import GameStatusPlugin from '../lib/GameStatusPlugin'
 
 export default class Boot extends Phaser.State {
   preload () {
@@ -40,6 +41,7 @@ export default class Boot extends Phaser.State {
     */
 
     game.add.plugin(new DetectIdle(game))
+    game.add.plugin(new GameStatusPlugin(game))
 
     this.state.start('Title')
   }
