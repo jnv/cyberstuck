@@ -1,8 +1,8 @@
 {
   "name": "cyberstuck",
   "private": true,
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "A Game of Life and New Media",
   "engines": {
     "electron": "1.4.5"
   },
