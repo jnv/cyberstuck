@@ -139,7 +139,6 @@ export default class MainGame extends Phaser.State {
     ball.events.onOutOfBounds.add(() => this.sm.ballLost())
     this.ball = ball
 
-
     game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
     game.input.mouse.mouseWheelCallback = this.onMouseWheel.bind(this)
     this.sm.init()

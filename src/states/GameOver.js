@@ -1,6 +1,7 @@
 import style from '../style'
 import PressButtonText from '../objects/PressButtonText'
 import {hasHiscore, saveGame} from '../lib/hiscore'
+import GameStatus from '../GameStatus'
 
 const HISCORE_FONT = {
   ...style.font,
@@ -9,6 +10,13 @@ const HISCORE_FONT = {
 
 export default class GameOver extends Phaser.State {
   init (gameStatus) {
+    // DEV
+    /*
+    if (!gameStatus) {
+      gameStatus = GameStatus({score: 9000})
+    }
+    */
+
     this.gameStatus = gameStatus
   }
 
