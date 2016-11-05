@@ -14,7 +14,7 @@ const game = new Phaser.Game(480, 640,
   false // antialias
 )
 
-const states = ['Boot', 'Title', 'Intro', 'Camera', 'MainGame', 'GameOver', 'Win', 'HiScore', 'HiScoreEnter', 'Finish', 'Demo']
+const states = ['Boot', 'Title', 'Intro', 'Camera', 'MainGame', 'GameOver', 'HiScore', 'HiScoreEnter', 'Finish', 'Demo']
 states.forEach(state => {
   game.state.add(state, require(`./states/${state}`).default)
 })

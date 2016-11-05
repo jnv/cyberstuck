@@ -84,7 +84,8 @@ export default class MainGame extends Phaser.State {
             const newStatus = {...this.gameStatus, level: nextLevel}
             this.state.start('MainGame', true, false, newStatus)
           } else {
-            this.state.start('Win', true, false, this.gameStatus)
+            this.gameStatus.won = true
+            this.state.start('GameOver', true, false, this.gameStatus)
           }
         },
         onLost: () => {

@@ -11,15 +11,15 @@ function hiscoreCollection (limit = null) {
     .limit(limit)
 }
 
-export function addGame (gameStatus, finished = true) {
+function putGame (gameStatus, finished = true) {
   if (finished) {
     gameStatus.finishedAt = Date.now()
   }
-  return DB.add(gameStatus)
+  return DB.put(gameStatus)
 }
 
-export function addToHiscore (gameStatus) {
-  return addGame(gameStatus).then(() => gameStatus.id)
+export function saveGame (gameStatus) {
+  return putGame(gameStatus).then(() => gameStatus.id)
 }
 
 export function getHiscore (limit = 10) {
@@ -31,24 +31,16 @@ function hiscorePosition (score) {
     score = {score}
   }
 
-  const entries = getHiscore(ENTRIES_TOP)
-
-  return sortedIndexBy(entries, score, o => -o.score)
+  return getHiscore(ENTRIES_TOP).then(entries => {
+    return sortedIndexBy(entries, score, o => -o.score)
+  })
 }
 
 export function hasHiscore (score) {
   if (!score) {
-    return false
+    return Promise.resolve(false)
   }
-  const index = hiscorePosition(score)
-
-  return index < ENTRIES_TOP
-}
-
-export function hasHiscoreOrSave (gameStatus) {
-  if (hasHiscore) {
-    return Promise.resolve(true)
-  }
-
-  return addGame(gameStatus).then(() => false)
+  return hiscorePosition(score).then(position => {
+    return position < ENTRIES_TOP
+  })
 }
