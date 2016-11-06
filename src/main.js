@@ -4,6 +4,7 @@ const electron = require('electron')
 const isDev = require('electron-is-dev')
 const winston = require('winston')
 const Sentry = require('@jnv/winston-sentry')
+const {ipcMain} = electron
 
 // Module to control application life.
 const app = electron.app
@@ -28,8 +29,14 @@ const logger = new (winston.Logger)({
     }),
   ],
 })
-// logger.handleExceptions(consoleTransport)
-global.logger = logger // Expose to global for renderer process
+global.logger = logger
+ipcMain.on('log', (event, {method, args}) => {
+  logger[method].apply(logger, args)
+})
+
+ipcMain.on('uncaughtException', (event, arg) => {
+  logger.error(arg.error || arg.message, arg)
+})
 
 // Attempt to reduce memory usage
 app.commandLine.appendSwitch('max_old_space_size', '1024')
