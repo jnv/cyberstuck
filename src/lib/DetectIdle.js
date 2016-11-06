@@ -27,7 +27,7 @@ export default class DetectIdle extends Phaser.Plugin {
   }
 
   onTimeout () {
-    console.log('Reached timeout, reloading')
+    console.info('Reached timeout, reloading', this.game.status.all)
     this.disable()
     window.location.reload(false)
   }
