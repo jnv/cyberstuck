@@ -6,6 +6,8 @@ window.Phaser = require('phaser/build/custom/phaser-split')
 
 global.IS_DEV = require('electron-is-dev')
 
+window.logger = require('./logger')
+
 const game = new Phaser.Game(480, 640,
   Phaser.CANVAS, // renderer
   '', // parent DOM ID

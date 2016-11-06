@@ -32,7 +32,8 @@
     "phaser-debug": "^1.1.8",
     "pify": "^2.3.0",
     "rgbquant": "^1.1.2",
-    "webfontloader": "^1.6.26"
+    "webfontloader": "^1.6.26",
+    "winston": "^2.3.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.0.0",

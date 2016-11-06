@@ -2,11 +2,28 @@
 // MAIN ELECTRON PROCESS
 const electron = require('electron')
 const isDev = require('electron-is-dev')
+const winston = require('winston')
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
+const logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.Console)({
+      level: isDev ? 'debug' : 'info',
+      colorize: isDev,
+      timestamp: true,
+      prettyPrint: true,
+      handleExceptions: true,
+      humanReadableUnhandledException: true,
+    }),
+  ],
+})
+// logger.handleExceptions(consoleTransport)
+global.logger = logger // Expose to global for renderer process
+
+// Attempt to reduce memory usage
 app.commandLine.appendSwitch('max_old_space_size', '1024')
 
 require('electron-debug')({showDevTools: true})
