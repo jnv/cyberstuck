@@ -3,6 +3,8 @@
 const electron = require('electron')
 const isDev = require('electron-is-dev')
 const winston = require('winston')
+const Sentry = require('@jnv/winston-sentry')
+
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
@@ -17,6 +19,12 @@ const logger = new (winston.Logger)({
       prettyPrint: true,
       handleExceptions: true,
       humanReadableUnhandledException: true,
+    }),
+    new Sentry({
+      handleExceptions: true,
+      level: 'warn',
+      dsn: 'https://28829654f05d42bc8e9f7eaa13422c66:59003a59be9d457d881ba138d7824b14@sentry.io/112410',
+      silent: isDev,
     }),
   ],
 })
