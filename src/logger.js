@@ -1,10 +1,10 @@
-const {remote, ipcRenderer} = require('electron')
-
-const logger = remote.getGlobal('logger')
+const {ipcRenderer} = require('electron')
 
 function ipcLog (method, ...args) {
   ipcRenderer.send('log', {method, args})
 }
+
+const logger = {}
 
 ;['profile', 'startTimer', 'verbose', 'info', 'warn', 'error']
   .forEach(method => {
@@ -14,6 +14,7 @@ function ipcLog (method, ...args) {
       ipcLog(method, arguments)
       return originalMethod.apply(window.console, arguments)
     }
+    logger[method] = console[method]
   })
 
 // Handle console.log separately to set verbose level
@@ -23,18 +24,9 @@ console.log = function () {
   return consoleLog.apply(window.console, arguments)
 }
 
-// Handle exceptions through process
-/*
-if (logger.catchExceptions && typeof logger.catchExceptions === 'function') {
-  global.process.on('uncaughtException', function (error) {
-    logger.catchExceptions(JSON.stringify(error))
-  })
-}
-*/
-
 window.onerror = function (message, filename, lineno, colno, error) {
-  // logger.error(`${message} in ${filename}:${lineno}:${colno}`, {filename, lineno, colno})
   ipcRenderer.send('uncaughtException', {message, filename, lineno, colno, error})
 }
 
+logger.log = ipcLog
 module.exports = logger

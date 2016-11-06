@@ -31,6 +31,10 @@ const logger = new (winston.Logger)({
 })
 global.logger = logger
 ipcMain.on('log', (event, {method, args}) => {
+  if (!logger[method]) {
+    logger.error(`Invalid logger method called: ${method}`, args)
+    return
+  }
   logger[method].apply(logger, args)
 })
 
