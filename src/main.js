@@ -35,7 +35,7 @@ ipcMain.on('log', (event, {method, args}) => {
     logger.error(`Invalid logger method called: ${method}`, args)
     return
   }
-  logger[method].apply(logger, args)
+  logger[method](...args)
 })
 
 ipcMain.on('uncaughtException', (event, arg) => {

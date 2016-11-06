@@ -1,7 +1,8 @@
 const {ipcRenderer} = require('electron')
 
-function ipcLog (method, ...args) {
-  ipcRenderer.send('log', {method, args})
+function ipcLog (method, args) {
+  const argsArr = Object.keys(args).map(key => args[key])
+  ipcRenderer.send('log', {method, args: argsArr})
 }
 
 const logger = {}
@@ -20,7 +21,7 @@ const logger = {}
 // Handle console.log separately to set verbose level
 const consoleLog = console.log
 console.log = function () {
-  ipcLog('verbose', ...arguments)
+  ipcLog('verbose', arguments)
   return consoleLog.apply(window.console, arguments)
 }
 
