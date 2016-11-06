@@ -35,11 +35,11 @@ export function preloadDefaultAvatars (game) {
   return DEFAULT_AVATARS
 }
 
-export function forceLoadAvatar (game, data, setAsDefault = true) {
-  const key = spriteKey(data.avatar)
-  game.load.spritesheet(key, data.avatarData, config.width, config.height)
+export function forceLoadAvatar (game, {avatar, avatarData}, setAsDefault = true) {
+  const key = spriteKey(avatar)
+  game.load.spritesheet(key, avatarData, config.width, config.height)
   if (setAsDefault) {
-    game.load.spritesheet('avatar', data.avatarData, config.width, config.height)
+    game.load.spritesheet('avatar', avatarData, config.width, config.height)
   }
   game.load.start()
 }

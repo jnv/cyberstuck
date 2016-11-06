@@ -30,9 +30,9 @@ function avatarPath (avatarId) {
   return path.join(AVATARS_DIR, `${avatarId}.png`)
 }
 
-export function saveAvatar (avatarId, dataUri) {
-  const filePath = avatarPath(avatarId)
-  return saveDataUri(filePath, dataUri)
+export function saveAvatar ({avatar, avatarData}) {
+  const filePath = avatarPath(avatar)
+  return saveDataUri(filePath, avatarData)
 }
 
 export function loadJson (file) {

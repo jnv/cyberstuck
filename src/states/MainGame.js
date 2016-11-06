@@ -1,5 +1,4 @@
 import StateMachine from '../StateMachine'
-import GameStatus from '../GameStatus'
 
 import style from '../style'
 
@@ -27,17 +26,12 @@ const KEYS_MAPPING = {
 }
 
 export default class MainGame extends Phaser.State {
-  init (status) {
+  init () {
     const {game} = this
 
-    if (!status) {
-      status = GameStatus()
-    }
+    this.levelSpec = LEVELS[game.status.level]
 
-    this.gameStatus = status
-    this.levelSpec = LEVELS[status.level]
-
-    const levelText = `LEVEL ${status.level}`
+    const levelText = `LEVEL ${game.status.level}`
 
     const sm = StateMachine.create({
       events: [
@@ -66,28 +60,29 @@ export default class MainGame extends Phaser.State {
         },
         onbeforeballLost: () => {
           this.resetBonuses()
-          this.gameStatus.lives -= 1
-          if (this.gameStatus.lives < 0) {
+
+          const lives = game.status.modifyLives(-1)
+          if (lives < 0) {
             sm.lose()
             return false
           }
-          this.hud.update(this.gameStatus)
+          this.updateHud()
           this.ball.reset()
         },
         onWon: () => {
           // check if there are more levels
-          const nextLevel = this.gameStatus.level + 1
+          const nextLevel = game.status.level
           // either transition to MainGame state with new level or go to Win
           if (LEVELS[nextLevel]) {
-            const newStatus = {...this.gameStatus, level: nextLevel}
-            this.state.start('MainGame', true, false, newStatus)
+            game.status.nextLevel()
+            this.state.start('MainGame', true, false)
           } else {
-            this.gameStatus.won = true
-            this.state.start('GameOver', true, false, this.gameStatus)
+            game.status.setWon()
+            this.state.start('GameOver', true, false)
           }
         },
         onLost: () => {
-          this.state.start('GameOver', true, false, this.gameStatus)
+          this.state.start('GameOver', true, false)
         },
       },
     })
@@ -96,20 +91,20 @@ export default class MainGame extends Phaser.State {
 
   preload () {
     Paddle.preload(this)
-    Level.preload(this, this.gameStatus.level)
+    Level.preload(this, this.game.status.level)
     BricksGroup.preload(this)
     Ball.preload(this)
   }
 
   create () {
-    const {game, gameStatus} = this
+    const {game} = this
 
     game.physics.startSystem(Phaser.Physics.ARCADE)
     game.physics.arcade.checkCollision.down = false
 
-    this.level = new Level(game, this, gameStatus.level)
+    this.level = new Level(game, this, game.status.level)
     this.hud = new Hud(this)
-    this.hud.update(gameStatus)
+    this.updateHud()
     const {frame} = this.level
     const worldBounds = [
       0 + FRAME_INNER_BORDER, // X
@@ -143,8 +138,13 @@ export default class MainGame extends Phaser.State {
   }
 
   addScore (amount) {
-    this.gameStatus.score += amount
-    this.hud.update(this.gameStatus)
+    const {status} = this.game
+    status.modifyScore(+amount)
+    this.updateHud()
+  }
+
+  updateHud () {
+    this.hud.update(this.game.status.all)
   }
 
   resetInput () {
@@ -192,6 +192,9 @@ export default class MainGame extends Phaser.State {
         break
       case 'q':
         this.sm.lose()
+        break
+      case '+':
+        this.addScore(1000)
         break
     }
   }

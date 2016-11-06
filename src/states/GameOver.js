@@ -1,7 +1,6 @@
 import style from '../style'
 import PressButtonText from '../objects/PressButtonText'
 import {hasHiscore, saveGame} from '../lib/hiscore'
-import GameStatus from '../GameStatus'
 
 const HISCORE_FONT = {
   ...style.font,
@@ -9,15 +8,7 @@ const HISCORE_FONT = {
 }
 
 export default class GameOver extends Phaser.State {
-  init (gameStatus) {
-    // DEV
-    /*
-    if (!gameStatus) {
-      gameStatus = GameStatus({score: 9000})
-    }
-    */
-
-    this.gameStatus = gameStatus
+  init () {
   }
 
   preload () {
@@ -25,30 +16,30 @@ export default class GameOver extends Phaser.State {
   }
 
   create () {
-    const {game, gameStatus} = this
+    const {game} = this
     this.add.sprite(0, 0, 'bg_base')
 
     let nextState = 'Finish'
     let textStr = 'GAME OVER'
 
-    if (gameStatus.won) {
+    if (game.status.won) {
       textStr = 'THE WINNER IS YOU!'
     }
 
     const finalText = this.add.text(game.world.centerX, game.world.centerY - 40, textStr, style.font)
     finalText.anchor.set(0.5)
 
-    hasHiscore(gameStatus).then(has => {
+    hasHiscore(game.status.score).then(has => {
       if (has) {
         this.addHiscoreText()
         nextState = 'HiScoreEnter'
       } else {
-        saveGame(gameStatus)
+        saveGame(game.status.all)
       }
     })
     .then(() => {
       new PressButtonText(game, this, 'continue').pressOnce(() => {
-        this.state.start(nextState, true, false, this.gameStatus)
+        this.state.start(nextState, true, false)
       })
     })
   }

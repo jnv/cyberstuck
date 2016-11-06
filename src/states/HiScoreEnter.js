@@ -1,5 +1,4 @@
 import style from '../style'
-import GameStatus from '../GameStatus'
 import {saveGame} from '../lib/hiscore'
 const TEXT = `CONGRATULATIONS!
 You made your mark in the Cyberspace.
@@ -30,12 +29,7 @@ function modulo (a, b) {
 }
 
 export default class HiScoreEnter extends Phaser.State {
-  init (status) {
-    if (!status) {
-      status = GameStatus({score: 1500})
-    }
-
-    this.gameStatus = status
+  init () {
   }
 
   preload () {
@@ -125,11 +119,11 @@ export default class HiScoreEnter extends Phaser.State {
   }
 
   nextState () {
-    const {gameStatus} = this
+    const {status} = this.game
     const initials = this.getInitials()
-    gameStatus.initials = initials
+    status.setInitials(initials)
     console.log(initials)
-    saveGame(gameStatus).then(insertedIndex => {
+    saveGame(status.all).then(insertedIndex => {
       this.state.start('HiScore', true, false, {nextState: 'Finish', highlight: insertedIndex})
     })
   }

@@ -1,6 +1,5 @@
 import {generateAvatarId, forceLoadAvatar} from '../lib/avatar'
 import {saveAvatar} from '../lib/storage'
-import GameStatus from '../GameStatus'
 
 import StateMachine from '../StateMachine'
 import Webcam from '../lib/HeadCapture'
@@ -133,7 +132,7 @@ export default class Camera extends Phaser.State {
 
           const button = new PressButtonText(game, this, 'continue')
           button.pressOnce(() => {
-            this.state.start('MainGame', true, false, this.gameStatus)
+            this.state.start('MainGame', true, false)
           })
         },
       },
@@ -185,8 +184,6 @@ export default class Camera extends Phaser.State {
     overlayText.anchor.set(0.5)
     this.overlayText = overlayText
 
-    this.gameStatus = null
-
     this.sm.start()
   }
 
@@ -229,22 +226,20 @@ export default class Camera extends Phaser.State {
     const avatarId = generateAvatarId()
 
     // game.cache.addSpriteSheet('avatar', canvas.toDataURL(), {name: imageName}, conf.avatar.width, conf.avatar.height)
-    const dataUrl = canvas.toDataURL()
-
-    const gameStatus = GameStatus({
+    const data = {
       avatar: avatarId,
-      avatarData: dataUrl,
-    })
-    this.gameStatus = gameStatus
+      avatarData: canvas.toDataURL(),
+    }
+    game.status.setAvatar(data)
 
-    forceLoadAvatar(this, gameStatus, true)
+    forceLoadAvatar(this, data, true)
 
     const avatar = this.add.sprite(game.world.centerX, game.world.centerY, 'avatar')
     avatar.anchor.setTo(0.5, 0.5)
     avatar.animations.add('default')
     avatar.animations.play('default', 1, true)
 
-    return saveAvatar(avatarId, dataUrl)
+    return saveAvatar(data)
   }
 
   onTrackingStatus (status) {
