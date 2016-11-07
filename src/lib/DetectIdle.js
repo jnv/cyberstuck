@@ -1,3 +1,5 @@
+import track from '../track'
+
 const IDLE_TIMEOUT = 60000
 
 export default class DetectIdle extends Phaser.Plugin {
@@ -27,9 +29,17 @@ export default class DetectIdle extends Phaser.Plugin {
   }
 
   onTimeout () {
+    track.event({
+      category: 'DetectIdle',
+      action: 'onTimeout',
+      label: this.game.screenName(),
+      value: this.game.status.score,
+    })
     console.info('Reached timeout, reloading', this.game.status.all)
     this.disable()
-    window.location.reload(false)
+    track.onReady(() => {
+      window.location.reload(false)
+    })
   }
 
   update () {
@@ -42,5 +52,6 @@ export default class DetectIdle extends Phaser.Plugin {
     window.removeEventListener('keydown', this.eventListener)
     window.removeEventListener(this.wheelEvent, this.eventListener)
     global.IDLE_DETECT = null
+    super.destroy()
   }
 }
