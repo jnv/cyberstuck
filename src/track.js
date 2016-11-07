@@ -14,6 +14,7 @@ function track () {
 track('create', 'UA-86927605-1', {
   storage: 'none',
 })
+track('set', 'checkProtocolTask', null)
 
 module.exports = {
   setUser (userId) {
