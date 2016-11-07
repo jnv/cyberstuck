@@ -3,8 +3,11 @@ const DEFAULT_FIELDS = {
 }
 
 function track () {
+  console.verbose('track', ...arguments)
+  if (window.IS_DEV) {
+    return
+  }
   try {
-    console.verbose('track', ...arguments)
     window.ga(...arguments)
   } catch (e) {
     console.warn(e, arguments)
