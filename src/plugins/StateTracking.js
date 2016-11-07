@@ -31,7 +31,17 @@ export default class StateTracking extends Phaser.Plugin {
 
     let name = this.screenName(newState)
 
-    track.screen(name)
+    let sessionControl = null
+
+    if (name === 'Intro') {
+      sessionControl = 'start'
+    }
+
+    if (name === 'Finish') {
+      sessionControl = 'end'
+    }
+
+    track.screen(name, {sessionControl})
   }
 
   destroy () {

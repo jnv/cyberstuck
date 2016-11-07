@@ -20,18 +20,20 @@ track('create', 'UA-86927605-1', {
 track('set', 'checkProtocolTask', null)
 
 module.exports = {
-  setUser (userId) {
+  setUser (userId, extras = {}) {
     track('set', 'userId', userId)
   },
-  event ({category, action, label = null, value = null, nonInteraction = false}) {
+  event ({category, action, label = null, value = null, nonInteraction = false, sessionControl = null}) {
     track('send', 'event', category, action, label, value, {
       nonInteraction,
+      sessionControl,
       screenName: name,
       ...DEFAULT_FIELDS,
     })
   },
-  screen (name) {
+  screen (name, extras = {}) {
     track('send', 'screen', {
+      ...extras,
       screenName: name,
       ...DEFAULT_FIELDS,
     })
