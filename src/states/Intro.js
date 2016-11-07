@@ -26,7 +26,7 @@ export default class Intro extends Phaser.State {
 
   create () {
     const {game} = this
-    game.status.reset()
+    game.status.newPlayer()
     this.add.sprite(0, 0, 'bg_base')
     const text = this.add.text(game.world.centerX, 100, TEXT, FONT_STYLE)
     text.alpha = 0

@@ -1,4 +1,5 @@
 import GameStatus from '../GameStatus'
+import track from '../track'
 
 export default class GameStatusPlugin extends Phaser.Plugin {
   constructor (game, parent) {
@@ -7,6 +8,11 @@ export default class GameStatusPlugin extends Phaser.Plugin {
     game.status = this
 
     this.reset()
+  }
+
+  newPlayer () {
+    this.reset()
+    track.setUser(this.status.id)
   }
 
   reset (overrides) {
