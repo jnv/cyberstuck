@@ -31,7 +31,7 @@ export default class HiScore extends Phaser.State {
       ...options,
     }
 
-    global.IDLE_DETECT.disable()
+    this.game.detectIdle.disable()
   }
 
   preload () {
@@ -91,7 +91,7 @@ export default class HiScore extends Phaser.State {
   }
 
   shutdown () {
-    global.IDLE_DETECT.enable()
+    this.game.detectIdle.enable()
   }
 }
 

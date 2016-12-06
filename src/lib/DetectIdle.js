@@ -11,7 +11,10 @@ export default class DetectIdle extends Phaser.Plugin {
     this.wheelEvent = game.device.wheelEvent
     window.addEventListener('keydown', this.eventListener, {capture: false, passive: true})
     window.addEventListener(this.wheelEvent, this.eventListener, {capture: false, passive: true})
-    global.IDLE_DETECT = this
+    game.detectIdle = this
+    this.onTimeout = new Phaser.Signal()
+
+    this.onTimeout.addOnce(this.onTimeoutHandler, this)
   }
 
   disable () {
@@ -28,7 +31,7 @@ export default class DetectIdle extends Phaser.Plugin {
     this.lastNudge = Date.now()
   }
 
-  onTimeout () {
+  onTimeoutHandler () {
     track.event({
       category: 'DetectIdle',
       action: 'onTimeout',
@@ -53,7 +56,7 @@ export default class DetectIdle extends Phaser.Plugin {
   destroy () {
     window.removeEventListener('keydown', this.eventListener)
     window.removeEventListener(this.wheelEvent, this.eventListener)
-    global.IDLE_DETECT = null
+    game.detectIdle = null
     super.destroy()
   }
 }

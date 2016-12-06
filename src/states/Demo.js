@@ -14,7 +14,7 @@ function demoFileName (number) {
 
 export default class Demo extends Phaser.State {
   init (options) {
-    global.IDLE_DETECT.disable()
+    this.game.detectIdle.disable()
 
     DEMO_ITER = (DEMO_ITER + 1) % FILES_COUNT
 
@@ -60,7 +60,7 @@ export default class Demo extends Phaser.State {
     this.video.onComplete.remove(this.onComplete)
     this.video.stop()
     this.video = null
-    global.IDLE_DETECT.enable()
+    this.game.detectIdle.enable()
   }
 }
 

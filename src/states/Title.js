@@ -12,7 +12,7 @@ let START_COUNT = 0
 
 export default class Title extends Phaser.State {
   init () {
-    global.IDLE_DETECT.disable()
+    this.game.detectIdle.disable()
   }
 
   preload () {
@@ -79,7 +79,7 @@ export default class Title extends Phaser.State {
 
   shutdown () {
     this.pressButtonText = null
-    global.IDLE_DETECT.enable()
+    this.game.detectIdle.enable()
   }
 
 }
