@@ -63,7 +63,14 @@ export default class Title extends Phaser.State {
   nextIdleState () {
     const {game} = this
     const thunk = PressButtonText.thunk('start', function () { game.state.start('Intro') })
-    this.state.start('HiScore', true, false, {
+
+    const nextStateNum = START_COUNT % 2
+    let nextState = 'Demo'
+    if (nextStateNum === 1) {
+      nextState = 'HiScore'
+    }
+
+    this.state.start(nextState, true, false, {
       timeout: 10000,
       nextState: 'Title',
       pressTextThunk: thunk,
