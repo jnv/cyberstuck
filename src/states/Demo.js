@@ -9,7 +9,7 @@ const DEMO_TEXT_STYLE = {
 }
 
 function demoFileName (number) {
-  return `assets/demo/${number}.ogv`
+  return `assets/demo/${number}.webm`
 }
 
 export default class Demo extends Phaser.State {
@@ -26,25 +26,29 @@ export default class Demo extends Phaser.State {
   }
 
   preload () {
-    this.load.video(VIDEO_KEY, demoFileName(DEMO_ITER))
   }
 
   create () {
     const {game, options} = this
 
-    const video = game.add.video(VIDEO_KEY)
-    video.addToWorld(game.world.centerX, game.world.centerY, 0.5, 0.5)
-    video.play()
-    video.onComplete.addOnce(this.onComplete, this)
-    this.video = video
+    try {
+      const video = game.add.video(null, demoFileName(DEMO_ITER))
+      video.addToWorld(game.world.centerX, game.world.centerY, 0.5, 0.5)
+      video.play()
+      video.onComplete.addOnce(this.onComplete, this)
+      this.video = video
 
-    const demoText = this.add.text(game.world.centerX - 10, 400, 'DEMO', DEMO_TEXT_STYLE)
-    demoText.anchor.set(0.5, 0)
-    demoText.alpha = 0
-    this.add.tween(demoText).to({alpha: 1}, 500, Phaser.Easing.Exponential.Out, true, 0, -1, true)
+      const demoText = this.add.text(game.world.centerX - 10, 400, 'DEMO', DEMO_TEXT_STYLE)
+      demoText.anchor.set(0.5, 0)
+      demoText.alpha = 0
+      this.add.tween(demoText).to({alpha: 1}, 500, Phaser.Easing.Exponential.Out, true, 0, -1, true)
 
-    if (options.pressTextThunk) {
-      options.pressTextThunk(game, this)
+      if (options.pressTextThunk) {
+        options.pressTextThunk(game, this)
+      }
+    } catch (e) {
+      console.error(e)
+      this.onComplete()
     }
   }
 
@@ -56,7 +60,6 @@ export default class Demo extends Phaser.State {
     this.video.onComplete.remove(this.onComplete)
     this.video.stop()
     this.video = null
-    this.cache.removeVideo(VIDEO_KEY)
     global.IDLE_DETECT.enable()
   }
 }
