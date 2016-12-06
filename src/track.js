@@ -1,3 +1,5 @@
+const GA_LOCAL_STORAGE_KEY = 'ga:clientId'
+
 const DEFAULT_FIELDS = {
   appName: 'CyberStuck',
 }
@@ -16,8 +18,12 @@ function track () {
 
 track('create', 'UA-86927605-1', {
   storage: 'none',
+  clientId: localStorage.getItem(GA_LOCAL_STORAGE_KEY),
 })
 track('set', 'checkProtocolTask', null)
+track(tracker => {
+  localStorage.setItem(GA_LOCAL_STORAGE_KEY, tracker.get('clientId'))
+})
 
 module.exports = {
   setUser (userId, extras = {}) {
