@@ -8,9 +8,8 @@
   },
   "main": "src/main.js",
   "scripts": {
-    "clean": "rimraf dist/ .cache",
-    "build": "npm run build:linux",
-    "build:linux": "NODE_ENV=production node_modules/.bin/electron-packager-compile . cyberstuck --version=1.4.10 --platform=linux --arch=x64 --out=./dist --overwrite --prune --asar",
+    "clean": "run clean",
+    "build": "run build",
     "start": "electron ."
   },
   "dependencies": {
@@ -48,6 +47,7 @@
     "eslint-config-standard": "^6.2.1",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^2.0.1",
-    "rimraf": "^2.5.4"
+    "rimraf": "^2.5.4",
+    "runjs": "^2.6.0"
   }
 }
