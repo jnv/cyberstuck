@@ -1,4 +1,4 @@
-import headtrackr from 'headtrackr'
+import headtrackr from '@jnv/headtrackr'
 
 function facetrackingResult (event = {}) {
   const {x, y, width, height, confidence} = event
