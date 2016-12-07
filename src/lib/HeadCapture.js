@@ -1,8 +1,24 @@
 import headtrackr from '@jnv/headtrackr'
 
-function facetrackingResult (event = {}) {
-  const {x, y, width, height, confidence} = event
-  return {x, y, width, height, confidence}
+const CANVAS_WIDTH = 320
+const CANVAS_HEIGHT = 240
+
+/**
+ * Calculate correct origin point and size value for a given center point, size and maximum size.
+ * For example, center is: 230 (y), size 60 (height) and maxSize 240 (CANVAS_HEIGHT);
+ * origin is calculated as 200 (230 - 60 / 2),
+ * size is calculated as 40 (since 260 would overlap the canvas)
+ */
+function clampCrop (center, size, maxSize) {
+  const origin = center - size / 2
+  const endPoint = origin + size
+  let realSize = size
+  if (endPoint < 0 || endPoint > maxSize) {
+    const delta = Math.abs(endPoint - maxSize)
+    realSize -= delta
+  }
+
+  return {origin, size: realSize}
 }
 
 export default class HeadCapture extends Phaser.Plugin {
@@ -30,8 +46,8 @@ export default class HeadCapture extends Phaser.Plugin {
     this.stream = null
 
     this.canvas = document.createElement('canvas')
-    this.canvas.width = 320
-    this.canvas.height = 240
+    this.canvas.width = CANVAS_WIDTH
+    this.canvas.height = CANVAS_HEIGHT
 
     // document.body.appendChild(this.canvas)
 
@@ -45,17 +61,25 @@ export default class HeadCapture extends Phaser.Plugin {
     this.onError = new Phaser.Signal()
     this.onTrackingStatus = new Phaser.Signal()
     this.onFaceTracking = new Phaser.Signal()
-    this.lastResult = {}
+    // by default set to the center + full canvas
+    this.lastResult = {
+      x: CANVAS_WIDTH / 2,
+      y: CANVAS_HEIGHT / 2,
+      width: CANVAS_WIDTH,
+      height: CANVAS_HEIGHT,
+    }
 
     this.trackingListener = (event) => {
-      // console.log(event.status)
       this.onTrackingStatus.dispatch(event.status)
     }
 
     this.facetrackingListener = (event) => {
-      // console.log(event)
       this.onFaceTracking.dispatch(event)
-      this.lastResult = event
+
+      // Rather keep an old result than to insert invalid value
+      if (event.width > 0 && event.height > 0) {
+        this.lastResult = event
+      }
     }
   }
 
@@ -120,10 +144,10 @@ export default class HeadCapture extends Phaser.Plugin {
     const {x, y, width, height} = this.lastResult
 
     // x and y are CENTER of object, need to recalculate the crop rect
-    const sx = x - width / 2
-    const sy = y - height / 2
+    const clampX = clampCrop(x, width, CANVAS_WIDTH)
+    const clampY = clampCrop(y, height, CANVAS_HEIGHT)
 
-    const image = context.getImageData(sx, sy, width, height)
+    const image = context.getImageData(clampX.origin, clampY.origin, clampX.size, clampY.size)
     return image
   }
 
