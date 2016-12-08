@@ -49,14 +49,14 @@ export default class DetectIdle extends Phaser.Plugin {
 
   update () {
     if (Date.now() - this.lastNudge > IDLE_TIMEOUT) {
-      this.onTimeout()
+      this.onTimeout.dispatch()
     }
   }
 
   destroy () {
     window.removeEventListener('keydown', this.eventListener)
     window.removeEventListener(this.wheelEvent, this.eventListener)
-    game.detectIdle = null
+    this.game.detectIdle = null
     super.destroy()
   }
 }
