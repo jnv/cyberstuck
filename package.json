@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "description": "A Game of Life and New Media",
   "engines": {
-    "electron": "1.4.10"
+    "electron": "1.4.11"
   },
   "main": "src/main.js",
   "scripts": {
@@ -41,7 +41,7 @@
     "babel-preset-latest-minimal": "^1.1.2",
     "color": "^1.0.1",
     "devtron": "^1.4.0",
-    "electron-compilers": "^4.0.5",
+    "electron-compilers": "^5.0.0",
     "electron-prebuilt-compile": "^1.4.10",
     "eslint": "^3.11.1",
     "eslint-config-standard": "^6.2.1",
