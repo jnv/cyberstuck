@@ -4,6 +4,12 @@ const electron = require('electron')
 const isDev = require('electron-is-dev')
 const winston = require('winston')
 const Sentry = require('@jnv/winston-sentry')
+
+require('electron-debug')({
+  enabled: true,
+  showDevTools: isDev,
+})
+
 const {ipcMain} = electron
 
 // Module to control application life.
@@ -45,7 +51,6 @@ ipcMain.on('uncaughtException', (event, arg) => {
 // Attempt to reduce memory usage
 app.commandLine.appendSwitch('max_old_space_size', '1024')
 
-require('electron-debug')({showDevTools: true})
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
