@@ -23,6 +23,7 @@ function iToChar (i) {
   return ALPHABET[i]
 }
 
+// Correctly handle modulo for negative values
 // http://javascript.about.com/od/problemsolving/a/modulobug.htm
 function modulo (a, b) {
   return ((a % b) + b) % b
@@ -81,7 +82,8 @@ export default class HiScoreEnter extends Phaser.State {
     this.currentLetter++
 
     if (this.currentLetter >= this.letters.length) {
-      return this.nextState()
+      this.nextState()
+      return
     }
 
     const tween = this.tweens[this.currentLetter]
@@ -119,10 +121,17 @@ export default class HiScoreEnter extends Phaser.State {
   }
 
   nextState () {
+    const {input} = this
     const {status} = this.game
+
+    // Cleanup input
+    input.keyboard.callbackContext = null
+    input.keyboard.onPressCallback = null
+    input.mouse.mouseWheelCallback = null
+
     const initials = this.getInitials()
     status.setInitials(initials)
-    console.log(initials)
+    // console.log(initials)
     saveGame(status.all).then(insertedIndex => {
       this.state.start('HiScore', true, false, {nextState: 'Finish', highlight: insertedIndex})
     })
