@@ -2,7 +2,6 @@ import style from '../style'
 
 let DEMO_ITER = 0
 const FILES_COUNT = 3
-const VIDEO_KEY = 'demoVideo'
 
 const DEMO_TEXT_STYLE = {
   ...style.fontTitle,
@@ -23,9 +22,6 @@ export default class Demo extends Phaser.State {
       pressTextThunk: null,
       ...options,
     }
-  }
-
-  preload () {
   }
 
   create () {
