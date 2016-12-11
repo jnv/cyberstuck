@@ -20,6 +20,11 @@ export default class Boot extends Phaser.State {
         this.game.AvatarPool = avatar.AvatarPool(hiscoreKeys, defaultAvatars)
       })
       .then(() => {
+        // XXX: synchronization: since this is an async part,
+        // preload() may finish earlier than we get the avatars ready.
+        // So to be on safe side we force load one more time and check if
+        // everything has been loaded in create()
+        this.load.start()
         this.loaded = true
       })
   }
