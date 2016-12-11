@@ -25,7 +25,7 @@ export default class Title extends Phaser.State {
     // XXX handle slow memory leak (?),
     //     periodically refresh page
     if (START_COUNT > START_LIMIT) {
-      console.log(`Reached START_COUNT ${START_COUNT} > ${START_LIMIT}, refreshing`)
+      console.info(`Reached START_COUNT ${START_COUNT} > ${START_LIMIT}, refreshing`)
       this.state.start('Finish')
       return
     }
