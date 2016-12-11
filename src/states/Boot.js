@@ -5,6 +5,10 @@ import GameStatusPlugin from '../lib/GameStatusPlugin'
 import StateTracking from '../plugins/StateTracking'
 
 export default class Boot extends Phaser.State {
+  init () {
+    this.loaded = false
+  }
+
   preload () {
     this.load.image('bg_base', 'assets/bg.png')
     this.load.image('avatar', 'assets/avatars/default.png')
@@ -14,6 +18,9 @@ export default class Boot extends Phaser.State {
       .then(hiscore => avatar.preloadDataUrls(this, hiscore))
       .then(hiscoreKeys => {
         this.game.AvatarPool = avatar.AvatarPool(hiscoreKeys, defaultAvatars)
+      })
+      .then(() => {
+        this.loaded = true
       })
   }
 
@@ -45,6 +52,14 @@ export default class Boot extends Phaser.State {
     game.add.plugin(new GameStatusPlugin(game))
     game.add.plugin(new StateTracking(game))
 
-    this.state.start('Title')
+    const waitForLoaded = () => {
+      if (!this.loaded || !this.load.hasLoaded) {
+        console.info('Throttling loading')
+        window.setTimeout(waitForLoaded, 50)
+      } else {
+        this.state.start('Title')
+      }
+    }
+    waitForLoaded()
   }
 }
