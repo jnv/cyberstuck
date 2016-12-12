@@ -1,4 +1,4 @@
-import StateMachine from '../StateMachine'
+import StateMachine from 'javascript-state-machine'
 
 import style from '../style'
 

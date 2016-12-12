@@ -1,4 +1,4 @@
-import track from '../track'
+import track from '../lib/track'
 
 const IDLE_TIMEOUT = 60000
 

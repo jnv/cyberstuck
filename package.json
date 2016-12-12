@@ -6,7 +6,7 @@
   "engines": {
     "electron": "1.4.11"
   },
-  "main": "src/main.js",
+  "main": "src/electron-main.js",
   "scripts": {
     "clean": "run clean",
     "build": "run build",

@@ -1,6 +1,6 @@
 const Color = require('color')
 
-const palette = require('../src/palette.json')
+const palette = require('../src/data/palette.json')
 
 const result = palette.map((hex) => Color(hex).rgbArray())
 

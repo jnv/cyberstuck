@@ -1,6 +1,6 @@
 import RgbQuant from 'rgbquant'
 import config from '../config'
-import palette from '../palette.json'
+import palette from '../data/palette.json'
 
 const avatar = config.avatar
 const CANVAS_WIDTH = avatar.width * avatar.frames

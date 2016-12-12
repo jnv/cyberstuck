@@ -8,7 +8,7 @@ const schemas = {
 }
 
 function defaultHiscore () {
-  const data = require('../defaultHiscore')
+  const data = require('../data/defaultHiscore')
   return data.map(item => GameStatus(item))
 }
 

@@ -1,4 +1,4 @@
-import spec from './levelsSpec'
+import spec from './data/levelsSpec'
 import parser from './lib/levelParser'
 
 const levels = {}

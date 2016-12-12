@@ -1,5 +1,5 @@
 import GameStatus from '../GameStatus'
-import track from '../track'
+import track from '../lib/track'
 
 export default class GameStatusPlugin extends Phaser.Plugin {
   constructor (game, parent) {
