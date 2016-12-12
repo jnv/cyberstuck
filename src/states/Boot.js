@@ -1,7 +1,7 @@
 import {getHiscore} from '../lib/hiscore'
 import * as avatar from '../lib/avatar'
-import DetectIdle from '../lib/DetectIdle'
-import GameStatusPlugin from '../lib/GameStatusPlugin'
+import DetectIdle from '../plugins/DetectIdle'
+import GameStatusPlugin from '../plugins/GameStatusPlugin'
 import StateTracking from '../plugins/StateTracking'
 
 export default class Boot extends Phaser.State {

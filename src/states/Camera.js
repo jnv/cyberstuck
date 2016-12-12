@@ -2,7 +2,7 @@ import {generateAvatarId, forceLoadAvatar} from '../lib/avatar'
 import {saveAvatar} from '../lib/storage'
 
 import StateMachine from '../StateMachine'
-import Webcam from '../lib/HeadCapture'
+import Webcam from '../plugins/HeadCapture'
 import conf from '../config'
 import composeFrames from '../lib/processCapture'
 import style from '../style'
