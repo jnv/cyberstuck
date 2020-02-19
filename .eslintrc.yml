@@ -1,16 +1,13 @@
 ---
-parser: babel-eslint
-extends: [standard]
+extends: [standard, prettier, prettier/standard]
 env:
   browser: true
   node: true
   es6: true
 parserOptions:
-  ecmaVersion: 6
   sourceType: module
-  ecmaFeatures:
-    experimentalObjectRestSpread: true
 rules:
   comma-dangle: [2, always-multiline]
 globals:
   Phaser: false
+  PIXI: false
