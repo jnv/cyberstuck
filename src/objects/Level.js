@@ -1,6 +1,3 @@
-import style from '../style'
-import config from '../config'
-
 export default class Level extends Phaser.Group {
   static preload(game, levelNumber = 1) {
     game.load.image('bg_level', `assets/levels/${levelNumber}.png`)

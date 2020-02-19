@@ -4,7 +4,7 @@ const PADDLE_HEIGHT = 13
 
 const ACCEL = 275
 const DRAG = 500
-const MAX_VELOCITY = 200
+// const MAX_VELOCITY = 200
 
 export default class Paddle extends Phaser.Sprite {
   static preload(game) {

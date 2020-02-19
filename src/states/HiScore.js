@@ -1,7 +1,7 @@
 import style from '../style'
 import {getHiscore} from '../lib/hiscore'
 import Avatar from '../objects/Avatar'
-import PressButtonText from '../objects/PressButtonText'
+// import PressButtonText from '../objects/PressButtonText'
 
 const ROW_HEIGHT = 45
 const ROW_MARGIN = 7
