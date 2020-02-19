@@ -29,17 +29,17 @@ const Q = new RgbQuant(QUANT_OPTS)
 // 2. quantize
 // 3. compose
 
-function scaleRatio (original, target) {
+function scaleRatio(original, target) {
   const hRatio = target.width / original.width
   const vRatio = target.height / original.height
   return Math.min(hRatio, vRatio)
 }
 
-function centerShift (origDim, targetDim, ratio) {
+function centerShift(origDim, targetDim, ratio) {
   return (targetDim - origDim * ratio) / 2
 }
 
-function imageDataToCanvas (imageData) {
+function imageDataToCanvas(imageData) {
   const {width, height} = imageData
   const c = PIXI.CanvasPool.create('imageDataToCanvas', width, height)
   const ctx = c.getContext('2d')
@@ -49,19 +49,19 @@ function imageDataToCanvas (imageData) {
   return c
 }
 
-function pixelsToCanvas (canvas, subpxArr) {
+function pixelsToCanvas(canvas, subpxArr) {
   const ctx = canvas.getContext('2d')
   const imgd = ctx.createImageData(canvas.width, canvas.height)
   imgd.data.set(subpxArr)
   ctx.putImageData(imgd, 0, 0)
 }
 
-function quantizeCanvas (canvas) {
+function quantizeCanvas(canvas) {
   const data = Q.reduce(canvas)
   pixelsToCanvas(canvas, data)
 }
 
-export default function composeFrames (frames) {
+export default function composeFrames(frames) {
   const canvas = document.createElement('canvas')
   canvas.width = CANVAS_WIDTH
   canvas.height = CANVAS_HEIGHT
@@ -73,12 +73,18 @@ export default function composeFrames (frames) {
     const imgd = frames[i]
     const {width, height} = imgd
     const ratio = scaleRatio(imgd, avatar)
-    const targetX = (i * aW) + centerShift(width, aW, ratio)
+    const targetX = i * aW + centerShift(width, aW, ratio)
     const targetY = 0 + centerShift(height, aH, ratio)
 
     const imgC = imageDataToCanvas(imgd)
-    const resized = PIXI.CanvasPool.create('composeFrames', width * ratio, height * ratio)
-    resized.getContext('2d').drawImage(imgC, 0, 0, resized.width, resized.height)
+    const resized = PIXI.CanvasPool.create(
+      'composeFrames',
+      width * ratio,
+      height * ratio
+    )
+    resized
+      .getContext('2d')
+      .drawImage(imgC, 0, 0, resized.width, resized.height)
     quantizeCanvas(resized)
     ctx.drawImage(resized, targetX, targetY)
     PIXI.CanvasPool.removeByCanvas(resized)

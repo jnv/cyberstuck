@@ -4,15 +4,15 @@ import GameStatus from '../GameStatus'
 const DB_NAME = 'game'
 
 const schemas = {
-  'games': 'id,startedAt,rankedScore,initials',
+  games: 'id,startedAt,rankedScore,initials',
 }
 
-function defaultHiscore () {
+function defaultHiscore() {
   const data = require('../data/defaultHiscore')
-  return data.map(item => GameStatus(item))
+  return data.map((item) => GameStatus(item))
 }
 
-export default function GameDb () {
+export default function GameDb() {
   Dexie.debug = true
   const db = new Dexie(DB_NAME)
 
@@ -26,10 +26,9 @@ export default function GameDb () {
 
   db.on('populate', () => {
     console.log('Populating database')
-    db.games.bulkAdd(defaultHiscore())
-      .then(lastKey => {
-        console.log(`Hiscore imported, lastKey = ${lastKey}`)
-      })
+    db.games.bulkAdd(defaultHiscore()).then((lastKey) => {
+      console.log(`Hiscore imported, lastKey = ${lastKey}`)
+    })
   })
 
   return db.games

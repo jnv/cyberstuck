@@ -26,7 +26,7 @@ const KEYS_MAPPING = {
 }
 
 export default class MainGame extends Phaser.State {
-  init () {
+  init() {
     const {game} = this
 
     this.levelSpec = LEVELS[game.status.level]
@@ -45,7 +45,12 @@ export default class MainGame extends Phaser.State {
       callbacks: {
         onReady: () => {
           // display LEVEL text
-          const readyText = this.add.text(game.world.centerX, game.world.centerY + 50, levelText, style.font)
+          const readyText = this.add.text(
+            game.world.centerX,
+            game.world.centerY + 50,
+            levelText,
+            style.font
+          )
           readyText.anchor.set(0.5)
           // setup timer for start()
           game.time.events.add(Phaser.Timer.SECOND * 2, () => {
@@ -89,14 +94,14 @@ export default class MainGame extends Phaser.State {
     this.sm = sm
   }
 
-  preload () {
+  preload() {
     Paddle.preload(this)
     Level.preload(this, this.game.status.level)
     BricksGroup.preload(this)
     Ball.preload(this)
   }
 
-  create () {
+  create() {
     const {game} = this
 
     game.physics.startSystem(Phaser.Physics.ARCADE)
@@ -109,7 +114,7 @@ export default class MainGame extends Phaser.State {
     const worldBounds = [
       0 + FRAME_INNER_BORDER, // X
       frame.y + FRAME_INNER_BORDER, // Y
-      frame.width - (2 * FRAME_INNER_BORDER), // width
+      frame.width - 2 * FRAME_INNER_BORDER, // width
       frame.height - FRAME_INNER_BORDER, // height; just a single border!
     ]
     // we are setting world bounds to be smaller than camera
@@ -132,26 +137,31 @@ export default class MainGame extends Phaser.State {
     ball.events.onOutOfBounds.add(() => this.sm.ballLost())
     this.ball = ball
 
-    game.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
+    game.input.keyboard.addCallbacks(
+      this,
+      undefined,
+      undefined,
+      this.onKeyPress
+    )
     game.input.mouse.mouseWheelCallback = this.onMouseWheel.bind(this)
     this.sm.init()
   }
 
-  addScore (amount) {
+  addScore(amount) {
     const {status} = this.game
     status.modifyScore(+amount)
     this.updateHud()
   }
 
-  updateHud () {
+  updateHud() {
     this.hud.update(this.game.status.all)
   }
 
-  resetInput () {
+  resetInput() {
     this.paddle.resetMovement()
   }
 
-  onMouseWheel (e) {
+  onMouseWheel(e) {
     e.preventDefault()
     if (!this.sm.is('Playing')) {
       return
@@ -163,7 +173,7 @@ export default class MainGame extends Phaser.State {
     }
   }
 
-  onKeyPress (char, event) {
+  onKeyPress(char, event) {
     if (!this.sm.is('Playing')) {
       return
     }
@@ -199,7 +209,7 @@ export default class MainGame extends Phaser.State {
     }
   }
 
-  onBallHitPaddle (ball, paddle) {
+  onBallHitPaddle(ball, paddle) {
     let diff = 0
 
     // Ball is falling down: reverse the direction
@@ -211,11 +221,11 @@ export default class MainGame extends Phaser.State {
     if (ball.x < paddle.x) {
       //  Ball is on the left-hand side of the paddle
       diff = paddle.x - ball.x
-      velocity.x = (-7 * diff)
+      velocity.x = -7 * diff
     } else if (ball.x > paddle.x) {
       //  Ball is on the right-hand side of the paddle
       diff = ball.x - paddle.x
-      velocity.x = (7 * diff)
+      velocity.x = 7 * diff
     } else {
       //  Ball is perfectly in the middle
       //  Add a little random X to stop it bouncing straight up!
@@ -223,7 +233,7 @@ export default class MainGame extends Phaser.State {
     }
   }
 
-  onBallHitBrick (ball, brick) {
+  onBallHitBrick(ball, brick) {
     brick.damage(1)
     if (!brick.alive) {
       this.addScore(BRICK_SCORE)
@@ -238,16 +248,16 @@ export default class MainGame extends Phaser.State {
     }
   }
 
-  onPaddleTouchBonus (paddle, bonus) {
+  onPaddleTouchBonus(paddle, bonus) {
     bonus.kill()
     this.addScore(bonus.score)
   }
 
-  resetBonuses () {
-    this.bonuses.forEachAlive(b => b.kill())
+  resetBonuses() {
+    this.bonuses.forEachAlive((b) => b.kill())
   }
 
-  spawnBonus (bounds) {
+  spawnBonus(bounds) {
     const {game} = this
     const x = bounds.centerX
     const y = bounds.centerY
@@ -260,7 +270,7 @@ export default class MainGame extends Phaser.State {
     bonus.body.gravity.y = 12
   }
 
-  update () {
+  update() {
     if (!this.sm.is('Playing')) {
       return
     }
@@ -278,6 +288,12 @@ export default class MainGame extends Phaser.State {
 
     game.physics.arcade.collide(ball, paddle, this.onBallHitPaddle, null, this)
     game.physics.arcade.collide(ball, bricks, this.onBallHitBrick, null, this)
-    game.physics.arcade.overlap(paddle, bonuses, this.onPaddleTouchBonus, null, this)
+    game.physics.arcade.overlap(
+      paddle,
+      bonuses,
+      this.onPaddleTouchBonus,
+      null,
+      this
+    )
   }
 }

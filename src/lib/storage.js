@@ -13,32 +13,31 @@ const BASE_DIR = path.join(app.getPath('userData'), DATA_DIR)
 const AVATARS_DIR = 'avatars'
 console.log(`Storage base dir is: ${BASE_DIR}`)
 
-function saveFile (filePath, data) {
+function saveFile(filePath, data) {
   const fullPath = path.resolve(BASE_DIR, filePath)
   const dir = path.dirname(fullPath)
-  return mkdirp(dir)
-          .then(() => fs.writeFile(fullPath, data))
+  return mkdirp(dir).then(() => fs.writeFile(fullPath, data))
 }
 
-export function saveDataUri (filePath, dataUri) {
+export function saveDataUri(filePath, dataUri) {
   const buffer = dataUriToBuffer(dataUri)
   console.log(`Saving data to ${filePath}`)
   return saveFile(filePath, buffer)
 }
 
-function avatarPath (avatarId) {
+function avatarPath(avatarId) {
   return path.join(AVATARS_DIR, `${avatarId}.png`)
 }
 
-export function saveAvatar ({avatar, avatarData}) {
+export function saveAvatar({avatar, avatarData}) {
   const filePath = avatarPath(avatar)
   return saveDataUri(filePath, avatarData)
 }
 
-export function loadJson (file) {
+export function loadJson(file) {
   return storage.get(path.join(DATA_DIR, file))
 }
 
-export function saveJson (file, contents) {
+export function saveJson(file, contents) {
   return storage.set(path.join(DATA_DIR, file), contents)
 }

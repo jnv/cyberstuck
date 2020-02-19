@@ -39,7 +39,7 @@ const livesBounds = [
 ]
 
 export default class Hud extends Phaser.Group {
-  constructor (game) {
+  constructor(game) {
     super(game, null, 'Hud')
 
     this.score = this.addScoreText(game)
@@ -47,7 +47,7 @@ export default class Hud extends Phaser.Group {
     this.avatar = this.addAvatar(game)
   }
 
-  addScoreText (game) {
+  addScoreText(game) {
     const scoreTitle = game.add.text(0, 0, 'SCORE', TITLE_STYLE)
     scoreTitle.setTextBounds(...scoreBounds)
 
@@ -57,22 +57,21 @@ export default class Hud extends Phaser.Group {
     return score
   }
 
-  addAvatar (game) {
+  addAvatar(game) {
     const avatar = game.add.sprite(5, 10, 'avatar')
     avatar.animations.add('default')
     return avatar
   }
 
-  addLivesText (game) {
+  addLivesText(game) {
     const lives = game.add.text(0, 0, '× ?', LIVES_STYLE)
     lives.setTextBounds(...livesBounds)
     return lives
   }
 
-  update (state) {
+  update(state) {
     this.score.text = state.score
     this.lives.text = `× ${state.lives}`
     this.avatar.animations.play('default', 4, false)
   }
-
 }

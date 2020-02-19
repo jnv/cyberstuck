@@ -3,13 +3,13 @@ import track from '../lib/track'
 const IGNORED_STATES = ['Boot', 'Title', 'HiScore', 'Demo']
 
 export default class StateTracking extends Phaser.Plugin {
-  constructor (game, parent) {
+  constructor(game, parent) {
     super(game, parent)
     game.screenName = this.screenName.bind(this)
     game.state.onStateChange.add(this.onStateChange, this)
   }
 
-  screenName (state = null) {
+  screenName(state = null) {
     const {game} = this
 
     if (!state) {
@@ -24,12 +24,12 @@ export default class StateTracking extends Phaser.Plugin {
     return state
   }
 
-  onStateChange (newState, oldState) {
+  onStateChange(newState, oldState) {
     if (IGNORED_STATES.includes(newState)) {
       return
     }
 
-    let name = this.screenName(newState)
+    const name = this.screenName(newState)
 
     let sessionControl = null
 
@@ -44,7 +44,7 @@ export default class StateTracking extends Phaser.Plugin {
     track.screen(name, {sessionControl})
   }
 
-  destroy () {
+  destroy() {
     this.game.state.onStateChange.remove(this.onStateChange, this)
     this.game.screenName = null
     super.destroy()

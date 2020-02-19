@@ -5,18 +5,18 @@ import GameStatusPlugin from '../plugins/GameStatusPlugin'
 import StateTracking from '../plugins/StateTracking'
 
 export default class Boot extends Phaser.State {
-  init () {
+  init() {
     this.loaded = false
   }
 
-  preload () {
+  preload() {
     this.load.image('bg_base', 'assets/bg.png')
     this.load.image('avatar', 'assets/avatars/default.png')
     this.load.image('down', 'assets/down.png')
     const defaultAvatars = avatar.preloadDefaultAvatars(this)
     getHiscore(20)
-      .then(hiscore => avatar.preloadDataUrls(this, hiscore))
-      .then(hiscoreKeys => {
+      .then((hiscore) => avatar.preloadDataUrls(this, hiscore))
+      .then((hiscoreKeys) => {
         this.game.AvatarPool = avatar.AvatarPool(hiscoreKeys, defaultAvatars)
       })
       .then(() => {
@@ -29,7 +29,7 @@ export default class Boot extends Phaser.State {
       })
   }
 
-  create () {
+  create() {
     // Phaser.Canvas.setImageRenderingCrisp(this.game.canvas)
     const {game, scale} = this
     // scale.pageAlignVertically = true

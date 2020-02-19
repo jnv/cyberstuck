@@ -1,6 +1,5 @@
 export default class Finish extends Phaser.State {
-  create () {
+  create() {
     window.location.reload(false)
   }
 }
-

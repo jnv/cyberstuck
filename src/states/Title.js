@@ -11,21 +11,23 @@ const START_LIMIT = 500
 let START_COUNT = 0
 
 export default class Title extends Phaser.State {
-  init () {
+  init() {
     this.game.detectIdle.disable()
   }
 
-  preload () {
+  preload() {
     this.load.image('logo', 'assets/logo.png')
     this.load.image('bg_title', 'assets/bg_title.png')
   }
 
-  create () {
+  create() {
     START_COUNT++
     // XXX handle slow memory leak (?),
     //     periodically refresh page
     if (START_COUNT > START_LIMIT) {
-      console.info(`Reached START_COUNT ${START_COUNT} > ${START_LIMIT}, refreshing`)
+      console.info(
+        `Reached START_COUNT ${START_COUNT} > ${START_LIMIT}, refreshing`
+      )
       this.state.start('Finish')
       return
     }
@@ -36,16 +38,26 @@ export default class Title extends Phaser.State {
 
     this.add.sprite(0, 0, 'logo')
 
-    const subtitle = this.add.text(game.world.centerX - 10, 400, 'LOST IN THE NEW MEDIA', SUBTITLE_STYLE)
+    const subtitle = this.add.text(
+      game.world.centerX - 10,
+      400,
+      'LOST IN THE NEW MEDIA',
+      SUBTITLE_STYLE
+    )
     subtitle.anchor.set(0.5, 0)
 
     this.pressButtonText = new PressButtonText(game, this, 'start')
 
-    this.input.keyboard.addCallbacks(this, undefined, undefined, this.onKeyPress)
+    this.input.keyboard.addCallbacks(
+      this,
+      undefined,
+      undefined,
+      this.onKeyPress
+    )
     this.time.events.add(TITLE_TIMEOUT, this.nextIdleState, this)
   }
 
-  onKeyPress (char, event) {
+  onKeyPress(char, event) {
     switch (char) {
       // XXX: debugging
       case 'g':
@@ -60,9 +72,11 @@ export default class Title extends Phaser.State {
     }
   }
 
-  nextIdleState () {
+  nextIdleState() {
     const {game} = this
-    const thunk = PressButtonText.thunk('start', function () { game.state.start('Intro') })
+    const thunk = PressButtonText.thunk('start', function() {
+      game.state.start('Intro')
+    })
 
     const nextStateNum = START_COUNT % 2
     let nextState = 'Demo'
@@ -77,10 +91,8 @@ export default class Title extends Phaser.State {
     })
   }
 
-  shutdown () {
+  shutdown() {
     this.pressButtonText = null
     this.game.detectIdle.enable()
   }
-
 }
-

@@ -2,7 +2,7 @@ import GameStatus from '../GameStatus'
 import track from '../lib/track'
 
 export default class GameStatusPlugin extends Phaser.Plugin {
-  constructor (game, parent) {
+  constructor(game, parent) {
     super(game, parent)
 
     game.status = this
@@ -10,60 +10,60 @@ export default class GameStatusPlugin extends Phaser.Plugin {
     this.reset()
   }
 
-  newPlayer () {
+  newPlayer() {
     this.reset()
     track.setUser(this.status.id)
   }
 
-  reset (overrides) {
+  reset(overrides) {
     console.log('GameStatus reset')
     this.status = GameStatus(overrides)
   }
 
-  get all () {
+  get all() {
     return this.status
   }
 
-  get lives () {
+  get lives() {
     return this.status.lives
   }
 
-  get level () {
+  get level() {
     return this.status.level
   }
 
-  get won () {
+  get won() {
     return this.status.won
   }
 
-  get score () {
+  get score() {
     return this.status.score
   }
 
-  setWon () {
+  setWon() {
     this.status.won = true
   }
 
-  nextLevel () {
+  nextLevel() {
     this.status.level += 1
     return this.status.level
   }
 
-  modifyLives (amount = 0) {
+  modifyLives(amount = 0) {
     this.status.lives += amount
     return this.status.lives
   }
 
-  modifyScore (amount = 0) {
+  modifyScore(amount = 0) {
     this.status.score += amount
   }
 
-  setAvatar ({avatar, avatarData}) {
+  setAvatar({avatar, avatarData}) {
     this.status.avatar = avatar
     this.status.avatarData = avatarData
   }
 
-  setInitials (initials) {
+  setInitials(initials) {
     this.status.initials = initials
   }
 }

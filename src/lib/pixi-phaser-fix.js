@@ -2,8 +2,8 @@
 
 module.exports = {
   Canvas: {
-    getSmoothingPrefix: function (context) {
-      var vendor = [ 'i', 'webkitI', 'msI', 'mozI', 'oI' ]
+    getSmoothingPrefix: function(context) {
+      var vendor = ['i', 'webkitI', 'msI', 'mozI', 'oI']
 
       for (var prefix in vendor) {
         var s = vendor[prefix] + 'mageSmoothingEnabled'

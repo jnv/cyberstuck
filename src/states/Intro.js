@@ -20,25 +20,25 @@ const FONT_STYLE = {
 }
 
 export default class Intro extends Phaser.State {
-  preload () {
+  preload() {}
 
-  }
-
-  create () {
+  create() {
     const {game} = this
     game.status.newPlayer()
     this.add.sprite(0, 0, 'bg_base')
     const text = this.add.text(game.world.centerX, 100, TEXT, FONT_STYLE)
     text.alpha = 0
     text.anchor.set(0.5, 0)
-    const tween = game.add.tween(text).to({alpha: 1}, 200, Phaser.Easing.Circular.In, true)
+    const tween = game.add
+      .tween(text)
+      .to({alpha: 1}, 200, Phaser.Easing.Circular.In, true)
 
     tween.onComplete.add(() => {
       game.time.events.add(1, this.readyNextState, this)
     })
   }
 
-  readyNextState () {
+  readyNextState() {
     const button = new PressButtonText(this.game, this, 'continue')
     button.pressOnce(() => {
       this.state.start('Camera')

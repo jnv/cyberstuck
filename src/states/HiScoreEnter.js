@@ -19,25 +19,22 @@ const INITIALS_STYLE = {
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('')
 const INITIALS_COUNT = 3
 
-function iToChar (i) {
+function iToChar(i) {
   return ALPHABET[i]
 }
 
 // Correctly handle modulo for negative values
 // http://javascript.about.com/od/problemsolving/a/modulobug.htm
-function modulo (a, b) {
+function modulo(a, b) {
   return ((a % b) + b) % b
 }
 
 export default class HiScoreEnter extends Phaser.State {
-  init () {
-  }
+  init() {}
 
-  preload () {
+  preload() {}
 
-  }
-
-  create () {
+  create() {
     const {game} = this
 
     this.add.sprite(0, 0, 'bg_base')
@@ -54,11 +51,18 @@ export default class HiScoreEnter extends Phaser.State {
     const startPos = game.world.centerX - letterBox
 
     for (var i = 0; i < INITIALS_COUNT; i++) {
-      const letter = this.add.text(startPos + i * letterBox, game.world.centerY, 'A', INITIALS_STYLE)
+      const letter = this.add.text(
+        startPos + i * letterBox,
+        game.world.centerY,
+        'A',
+        INITIALS_STYLE
+      )
       letter.charIndex = 0 // XXX: modifying class
       letter.anchor.set(0.5)
       letters[i] = letter
-      tweens[i] = this.add.tween(letter).to({alpha: 0.2}, 300, Phaser.Easing.Quadratic.Out, false, 0, -1, true)
+      tweens[i] = this.add
+        .tween(letter)
+        .to({alpha: 0.2}, 300, Phaser.Easing.Quadratic.Out, false, 0, -1, true)
     }
 
     this.letterIndex = letterIndex
@@ -71,7 +75,7 @@ export default class HiScoreEnter extends Phaser.State {
     this.letterForward()
   }
 
-  letterForward () {
+  letterForward() {
     if (this.currentLetter >= 0) {
       // stop animating last letter
       // set alpha to 1
@@ -91,7 +95,7 @@ export default class HiScoreEnter extends Phaser.State {
     tween.start()
   }
 
-  letterChange (by) {
+  letterChange(by) {
     const letter = this.letters[this.currentLetter]
     const newIndex = modulo(letter.charIndex + by, ALPHABET.length)
 
@@ -100,18 +104,18 @@ export default class HiScoreEnter extends Phaser.State {
     letter.alpha = 1
   }
 
-  getInitials () {
-    return this.letters.map(l => l.text).join('')
+  getInitials() {
+    return this.letters.map((l) => l.text).join('')
   }
 
-  onKeyPress (char, event) {
+  onKeyPress(char, event) {
     event.preventDefault()
     if (char === ' ') {
       this.letterForward()
     }
   }
 
-  onMouseWheel (e) {
+  onMouseWheel(e) {
     e.preventDefault()
     if (event.deltaY < 0) {
       this.letterChange(-1)
@@ -120,7 +124,7 @@ export default class HiScoreEnter extends Phaser.State {
     }
   }
 
-  nextState () {
+  nextState() {
     const {input} = this
     const {status} = this.game
 
@@ -132,12 +136,13 @@ export default class HiScoreEnter extends Phaser.State {
     const initials = this.getInitials()
     status.setInitials(initials)
     // console.log(initials)
-    saveGame(status.all).then(insertedIndex => {
-      this.state.start('HiScore', true, false, {nextState: 'Finish', highlight: insertedIndex})
+    saveGame(status.all).then((insertedIndex) => {
+      this.state.start('HiScore', true, false, {
+        nextState: 'Finish',
+        highlight: insertedIndex,
+      })
     })
   }
 
-  update () {
-  }
+  update() {}
 }
-

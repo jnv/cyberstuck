@@ -8,7 +8,9 @@ global.IS_DEV = require('electron-is-dev')
 
 window.logger = require('./logger')
 
-const game = new Phaser.Game(480, 640,
+const game = new Phaser.Game(
+  480,
+  640,
   Phaser.CANVAS, // renderer
   '', // parent DOM ID
   null, // initial state
@@ -16,8 +18,19 @@ const game = new Phaser.Game(480, 640,
   false // antialias
 )
 
-const states = ['Boot', 'Title', 'Intro', 'Camera', 'MainGame', 'GameOver', 'HiScore', 'HiScoreEnter', 'Finish', 'Demo']
-states.forEach(state => {
+const states = [
+  'Boot',
+  'Title',
+  'Intro',
+  'Camera',
+  'MainGame',
+  'GameOver',
+  'HiScore',
+  'HiScoreEnter',
+  'Finish',
+  'Demo',
+]
+states.forEach((state) => {
   game.state.add(state, require(`./states/${state}`).default)
 })
 

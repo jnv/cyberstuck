@@ -4,7 +4,7 @@ const DEFAULT_FIELDS = {
   appName: 'CyberStuck',
 }
 
-function track () {
+function track() {
   console.verbose('track', ...arguments)
   if (window.IS_DEV) {
     return
@@ -21,15 +21,22 @@ track('create', 'UA-86927605-1', {
   clientId: localStorage.getItem(GA_LOCAL_STORAGE_KEY),
 })
 track('set', 'checkProtocolTask', null)
-track(tracker => {
+track((tracker) => {
   localStorage.setItem(GA_LOCAL_STORAGE_KEY, tracker.get('clientId'))
 })
 
 module.exports = {
-  setUser (userId, extras = {}) {
+  setUser(userId, extras = {}) {
     track('set', 'userId', userId)
   },
-  event ({category, action, label = null, value = null, nonInteraction = false, sessionControl = null}) {
+  event({
+    category,
+    action,
+    label = null,
+    value = null,
+    nonInteraction = false,
+    sessionControl = null,
+  }) {
     track('send', 'event', category, action, label, value, {
       nonInteraction,
       sessionControl,
@@ -37,18 +44,18 @@ module.exports = {
       ...DEFAULT_FIELDS,
     })
   },
-  screen (name, extras = {}) {
+  screen(name, extras = {}) {
     track('send', 'screen', {
       ...extras,
       screenName: name,
       ...DEFAULT_FIELDS,
     })
   },
-  timing ({category, variable, value, label = null}) {
+  timing({category, variable, value, label = null}) {
     track('send', 'timing', category, variable, value, label, DEFAULT_FIELDS)
   },
   // XXX explicitly call ga directly to execute functions even in DEV
-  onReady (callback) {
+  onReady(callback) {
     if (window.ga) {
       window.ga(callback)
     } else {

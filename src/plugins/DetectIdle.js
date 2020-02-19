@@ -3,35 +3,41 @@ import track from '../lib/track'
 const IDLE_TIMEOUT = 60000
 
 export default class DetectIdle extends Phaser.Plugin {
-  constructor (game, parent, trackingOptions = {}) {
+  constructor(game, parent, trackingOptions = {}) {
     super(game, parent)
     this.nudge()
 
     this.eventListener = () => this.nudge()
     this.wheelEvent = game.device.wheelEvent
-    window.addEventListener('keydown', this.eventListener, {capture: false, passive: true})
-    window.addEventListener(this.wheelEvent, this.eventListener, {capture: false, passive: true})
+    window.addEventListener('keydown', this.eventListener, {
+      capture: false,
+      passive: true,
+    })
+    window.addEventListener(this.wheelEvent, this.eventListener, {
+      capture: false,
+      passive: true,
+    })
     game.detectIdle = this
     this.onTimeout = new Phaser.Signal()
 
     this.onTimeout.addOnce(this.onTimeoutHandler, this)
   }
 
-  disable () {
+  disable() {
     console.log('DetectIdle disabled')
     this.active = false
   }
 
-  enable () {
+  enable() {
     console.log('DetectIdle enabled')
     this.active = true
   }
 
-  nudge () {
+  nudge() {
     this.lastNudge = Date.now()
   }
 
-  onTimeoutHandler () {
+  onTimeoutHandler() {
     track.event({
       category: 'DetectIdle',
       action: 'onTimeout',
@@ -47,13 +53,13 @@ export default class DetectIdle extends Phaser.Plugin {
     })
   }
 
-  update () {
+  update() {
     if (Date.now() - this.lastNudge > IDLE_TIMEOUT) {
       this.onTimeout.dispatch()
     }
   }
 
-  destroy () {
+  destroy() {
     window.removeEventListener('keydown', this.eventListener)
     window.removeEventListener(this.wheelEvent, this.eventListener)
     this.game.detectIdle = null

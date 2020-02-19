@@ -9,7 +9,7 @@ const CANVAS_HEIGHT = 240
  * origin is calculated as 200 (230 - 60 / 2),
  * size is calculated as 40 (since 260 would overlap the canvas)
  */
-function clampCrop (center, size, maxSize) {
+function clampCrop(center, size, maxSize) {
   const origin = center - size / 2
   const endPoint = origin + size
   let realSize = size
@@ -22,7 +22,7 @@ function clampCrop (center, size, maxSize) {
 }
 
 export default class HeadCapture extends Phaser.Plugin {
-  constructor (game, parent, trackingOptions = {}) {
+  constructor(game, parent, trackingOptions = {}) {
     super(game, parent)
 
     // const debug = document.createElement('canvas')
@@ -40,7 +40,11 @@ export default class HeadCapture extends Phaser.Plugin {
       ...trackingOptions,
     }
 
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia
+    navigator.getUserMedia =
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia
 
     this.context = null
     this.stream = null
@@ -83,47 +87,51 @@ export default class HeadCapture extends Phaser.Plugin {
     }
   }
 
-  addEventListeners () {
+  addEventListeners() {
     document.addEventListener('headtrackrStatus', this.trackingListener)
     document.addEventListener('facetrackingEvent', this.facetrackingListener)
   }
 
-  removeEventListeners () {
+  removeEventListeners() {
     document.removeEventListener('headtrackrStatus', this.trackingListener)
     document.removeEventListener('facetrackingEvent', this.facetrackingListener)
   }
 
-  setup (width, height, context) {
+  setup(width, height, context) {
     this.width = width
     this.height = height
     this.context = context
   }
 
-  start () {
+  start() {
     if (!this.width || !this.height || !this.context) {
       throw new Error('Camera was not initialized with setup')
     }
 
     if (!this.stream) {
-      navigator.getUserMedia({
-        audio: false,
-        video: { mandatory: { minWidth: this.width, minHeight: this.height } } },
-        this.connectCallback.bind(this), this.errorCallback.bind(this))
+      navigator.getUserMedia(
+        {
+          audio: false,
+          video: {mandatory: {minWidth: this.width, minHeight: this.height}},
+        },
+        this.connectCallback.bind(this),
+        this.errorCallback.bind(this)
+      )
       this.addEventListeners()
       this.tracker.start()
     }
   }
 
-  stop () {
+  stop() {
     if (this.stream) {
       this.tracker.stop()
-      this.stream.getTracks().forEach(t => t.stop())
+      this.stream.getTracks().forEach((t) => t.stop())
       this.removeEventListeners()
       this.stream = null
     }
   }
 
-  connectCallback (stream) {
+  connectCallback(stream) {
     this.stream = stream
 
     this.video.src = window.URL.createObjectURL(this.stream)
@@ -131,11 +139,11 @@ export default class HeadCapture extends Phaser.Plugin {
     this.onConnect.dispatch(this.video)
   }
 
-  errorCallback (event) {
+  errorCallback(event) {
     this.onError.dispatch(event)
   }
 
-  grab () {
+  grab() {
     if (!this.stream) {
       throw new Error('Stream not available')
     }
@@ -147,17 +155,22 @@ export default class HeadCapture extends Phaser.Plugin {
     const clampX = clampCrop(x, width, CANVAS_WIDTH)
     const clampY = clampCrop(y, height, CANVAS_HEIGHT)
 
-    const image = context.getImageData(clampX.origin, clampY.origin, clampX.size, clampY.size)
+    const image = context.getImageData(
+      clampX.origin,
+      clampY.origin,
+      clampX.size,
+      clampY.size
+    )
     return image
   }
 
-  update () {
+  update() {
     if (this.stream) {
       this.context.drawImage(this.video, 0, 0)
     }
   }
 
-  get active () {
+  get active() {
     return !!this.stream
   }
 }

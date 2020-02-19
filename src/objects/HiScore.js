@@ -1,18 +1,16 @@
 import style from '../style'
 
-const data = [{
-  id: '1',
-  score: 9999,
-},
+const data = [
+  {
+    id: '1',
+    score: 9999,
+  },
 ]
 
 export default class PressButtonText extends Phaser.Group {
-  preload () {
+  preload() {}
 
-  }
-
-  constructor (game, parent) {
+  constructor(game, parent) {
     super(game)
-
   }
 }

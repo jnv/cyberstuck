@@ -8,14 +8,11 @@ const HISCORE_FONT = {
 }
 
 export default class GameOver extends Phaser.State {
-  init () {
-  }
+  init() {}
 
-  preload () {
+  preload() {}
 
-  }
-
-  create () {
+  create() {
     const {game} = this
     this.add.sprite(0, 0, 'bg_base')
 
@@ -26,31 +23,39 @@ export default class GameOver extends Phaser.State {
       textStr = 'THE WINNER IS YOU!'
     }
 
-    const finalText = this.add.text(game.world.centerX, game.world.centerY - 40, textStr, style.font)
+    const finalText = this.add.text(
+      game.world.centerX,
+      game.world.centerY - 40,
+      textStr,
+      style.font
+    )
     finalText.anchor.set(0.5)
 
-    hasHiscore(game.status.score).then(has => {
-      if (has) {
-        this.addHiscoreText()
-        nextState = 'HiScoreEnter'
-      } else {
-        saveGame(game.status.all)
-      }
-    })
-    .then(() => {
-      new PressButtonText(game, this, 'continue').pressOnce(() => {
-        this.state.start(nextState, true, false)
+    hasHiscore(game.status.score)
+      .then((has) => {
+        if (has) {
+          this.addHiscoreText()
+          nextState = 'HiScoreEnter'
+        } else {
+          saveGame(game.status.all)
+        }
       })
-    })
+      .then(() => {
+        new PressButtonText(game, this, 'continue').pressOnce(() => {
+          this.state.start(nextState, true, false)
+        })
+      })
   }
 
-  addHiscoreText () {
-    const text = this.add.text(this.game.world.centerX, this.game.world.centerY + 20, 'NEW HI-SCORE!', HISCORE_FONT)
+  addHiscoreText() {
+    const text = this.add.text(
+      this.game.world.centerX,
+      this.game.world.centerY + 20,
+      'NEW HI-SCORE!',
+      HISCORE_FONT
+    )
     text.anchor.set(0.5)
   }
 
-  update () {
-
-  }
+  update() {}
 }
-

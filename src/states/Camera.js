@@ -25,8 +25,7 @@ the Cyberspace.
 Get ready to save StuNoMe.
 
 Good Luck!
-`
-,
+`,
 }
 
 const INTRO_FONT_STYLE = {
@@ -37,7 +36,7 @@ const INTRO_FONT_STYLE = {
 }
 
 export default class Camera extends Phaser.State {
-  init () {
+  init() {
     const {game} = this
 
     game.onPause.add(this.onPause, this)
@@ -47,7 +46,11 @@ export default class Camera extends Phaser.State {
       events: [
         {name: 'start', from: 'none', to: 'Start'},
         {name: 'startTracking', from: 'Start', to: 'NoFace'},
-        {name: 'faceLost', from: ['NoFace', 'FaceVisible', 'Countdown'], to: 'NoFace'},
+        {
+          name: 'faceLost',
+          from: ['NoFace', 'FaceVisible', 'Countdown'],
+          to: 'NoFace',
+        },
         {name: 'faceFound', from: ['NoFace', 'FaceVisible'], to: 'FaceVisible'},
         {name: 'startCountdown', from: 'FaceVisible', to: 'Countdown'},
         {name: 'startCapture', from: 'Countdown', to: 'Capture'},
@@ -58,7 +61,12 @@ export default class Camera extends Phaser.State {
       callbacks: {
         onStart: () => {
           this.surface.visible = false
-          const introText = this.add.text(game.world.centerX, 100, TEXTS.start, INTRO_FONT_STYLE)
+          const introText = this.add.text(
+            game.world.centerX,
+            100,
+            TEXTS.start,
+            INTRO_FONT_STYLE
+          )
           introText.anchor.set(0.5, 0)
 
           this.camera.start()
@@ -127,7 +135,12 @@ export default class Camera extends Phaser.State {
           this.overlayText.text = ''
         },
         onDisplay: (event, from, to, frames) => {
-          const text = this.add.text(game.world.centerX, 100, TEXTS.display, INTRO_FONT_STYLE)
+          const text = this.add.text(
+            game.world.centerX,
+            100,
+            TEXTS.display,
+            INTRO_FONT_STYLE
+          )
           text.anchor.set(0.5, 0)
 
           const button = new PressButtonText(game, this, 'continue')
@@ -140,11 +153,9 @@ export default class Camera extends Phaser.State {
     this.sm = sm
   }
 
-  preload () {
+  preload() {}
 
-  }
-
-  create () {
+  create() {
     // FIXME: add global timeout
 
     const {game} = this
@@ -180,47 +191,54 @@ export default class Camera extends Phaser.State {
       stroke: '#000',
       strokeThickness: 3,
     }
-    const overlayText = this.add.text(game.world.centerX, game.world.centerY, '', overlayStyle)
+    const overlayText = this.add.text(
+      game.world.centerX,
+      game.world.centerY,
+      '',
+      overlayStyle
+    )
     overlayText.anchor.set(0.5)
     this.overlayText = overlayText
 
     this.sm.start()
   }
 
-  shutdown () {
+  shutdown() {
     this.game.plugins.remove(this.camera)
   }
 
-  onPause () {
+  onPause() {
     console.log('pause')
     this.camera.stop()
   }
-  onResume () {
+
+  onResume() {
     console.log('resume')
     if (!this.sm.is('Display')) {
       this.camera.start()
     }
   }
 
-  onCameraConnect (e) {
+  onCameraConnect(e) {
     // console.log(e)
   }
 
-  onCameraError (e) {
+  onCameraError(e) {
     console.error(e)
   }
 
-  captureFrame () {
+  captureFrame() {
     const {shutter} = this
 
     shutter.alpha = 1
-    this.add.tween(shutter)
-            .to({alpha: 0}, CAPTURE_INTERVAL / 3, Phaser.Easing.Cubic.Out, true)
+    this.add
+      .tween(shutter)
+      .to({alpha: 0}, CAPTURE_INTERVAL / 3, Phaser.Easing.Cubic.Out, true)
 
     return this.camera.grab()
   }
 
-  generateAvatar (frames) {
+  generateAvatar(frames) {
     const canvas = composeFrames(frames)
     const {game} = this
     const avatarId = generateAvatarId()
@@ -234,7 +252,11 @@ export default class Camera extends Phaser.State {
 
     forceLoadAvatar(this, data, true)
 
-    const avatar = this.add.sprite(game.world.centerX, game.world.centerY, 'avatar')
+    const avatar = this.add.sprite(
+      game.world.centerX,
+      game.world.centerY,
+      'avatar'
+    )
     avatar.anchor.setTo(0.5, 0.5)
     avatar.animations.add('default')
     avatar.animations.play('default', 1, true)
@@ -242,7 +264,7 @@ export default class Camera extends Phaser.State {
     return saveAvatar(data)
   }
 
-  onTrackingStatus (status) {
+  onTrackingStatus(status) {
     if (!this.sm.is('NoFace') && !this.sm.is('Countdown')) {
       return
     }
@@ -270,7 +292,7 @@ export default class Camera extends Phaser.State {
     }
   }
 
-  onFaceTracking (e) {
+  onFaceTracking(e) {
     // console.log(e.x, e.y)
     // apparently we are already tracking the face
     if (this.sm.is('NoFace')) {
@@ -282,12 +304,10 @@ export default class Camera extends Phaser.State {
     }
   }
 
-  update () {
+  update() {
     // this.camera.update()
     // if (this.camBitmap.visible) {
     //   this.camBitmap.update()
     // }
   }
-
 }
-

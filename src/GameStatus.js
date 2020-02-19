@@ -12,7 +12,7 @@ const DEFAULT_STATUS = {
   won: false,
 }
 
-function GameStatus (overrides) {
+function GameStatus(overrides) {
   return Object.seal({
     ...DEFAULT_STATUS,
     ...overrides,

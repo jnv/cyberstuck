@@ -22,10 +22,10 @@ const SCORE_STYLE = {
 }
 
 export default class HiScore extends Phaser.State {
-  init (options) {
+  init(options) {
     this.options = {
       nextState: 'Title',
-      pressTextThunk: null, //PressButtonText.thunk('wat', () => {}),
+      pressTextThunk: null, // PressButtonText.thunk('wat', () => {}),
       timeout: 5000,
       highlight: null,
       ...options,
@@ -34,30 +34,32 @@ export default class HiScore extends Phaser.State {
     this.game.detectIdle.disable()
   }
 
-  preload () {
+  preload() {}
 
-  }
-
-  create () {
+  create() {
     const {game, options} = this
 
     this.add.sprite(0, 0, 'bg_base')
 
-    const title = this.add.text(game.world.centerX, style.canvasBorder, 'HI-SCORES', style.fontTitle)
+    const title = this.add.text(
+      game.world.centerX,
+      style.canvasBorder,
+      'HI-SCORES',
+      style.fontTitle
+    )
     title.anchor.set(0.5, 0)
 
-    getHiscore()
-      .then(scores => {
-        for (var i = scores.length - 1; i >= 0; i--) {
-          const data = scores[i]
-          const row = this.add.group()
-          row.x = H_MARGIN
-          row.y = (ROW_MARGIN + ROW_HEIGHT) * i + TOP_MARGIN
-          this.addAvatar(row, data.avatar, i)
-          this.addInitials(row, data.initials)
-          this.addScore(row, data.score)
-        }
-      })
+    getHiscore().then((scores) => {
+      for (var i = scores.length - 1; i >= 0; i--) {
+        const data = scores[i]
+        const row = this.add.group()
+        row.x = H_MARGIN
+        row.y = (ROW_MARGIN + ROW_HEIGHT) * i + TOP_MARGIN
+        this.addAvatar(row, data.avatar, i)
+        this.addInitials(row, data.initials)
+        this.addScore(row, data.score)
+      }
+    })
 
     if (options.timeout && this.options.nextState) {
       this.time.events.add(this.options.timeout, this.nextState, this)
@@ -68,30 +70,29 @@ export default class HiScore extends Phaser.State {
     }
   }
 
-  addAvatar (group, id, i) {
+  addAvatar(group, id, i) {
     const sprite = new Avatar(this, 0, 0, id)
     sprite.scale.set(AVATAR_SCALE)
     group.add(sprite)
   }
 
-  addInitials (group, value) {
+  addInitials(group, value) {
     const text = this.add.text(0, 0, value, INITIALS_STYLE)
     text.setTextBounds(70, 0, 300, ROW_HEIGHT)
     group.add(text)
   }
 
-  addScore (group, value) {
+  addScore(group, value) {
     const text = this.add.text(0, 0, value, SCORE_STYLE)
     text.setTextBounds(H_MARGIN, 0, 480 - H_MARGIN * 3, ROW_HEIGHT)
     group.add(text)
   }
 
-  nextState () {
+  nextState() {
     this.state.start(this.options.nextState, true, false)
   }
 
-  shutdown () {
+  shutdown() {
     this.game.detectIdle.enable()
   }
 }
-

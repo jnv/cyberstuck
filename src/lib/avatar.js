@@ -1,7 +1,7 @@
 import {uniq, shuffle} from 'lodash'
 import {avatar as config} from '../config'
 
-export function generateAvatarId () {
+export function generateAvatarId() {
   return `${Math.floor(Date.now() / 100)}`
 }
 
@@ -18,24 +18,33 @@ const DEFAULT_AVATARS = [
   'tyna',
 ]
 
-export function spriteKey (id) {
+export function spriteKey(id) {
   return `avatar-${id}`
 }
 
-function defaultAvatarPath (id) {
+function defaultAvatarPath(id) {
   return `assets/avatars/${id}.png`
 }
 
-export function preloadDefaultAvatars (game) {
-  DEFAULT_AVATARS.forEach(id => {
+export function preloadDefaultAvatars(game) {
+  DEFAULT_AVATARS.forEach((id) => {
     const key = spriteKey(id)
-    game.load.spritesheet(key, defaultAvatarPath(id), config.width, config.height)
+    game.load.spritesheet(
+      key,
+      defaultAvatarPath(id),
+      config.width,
+      config.height
+    )
   })
 
   return DEFAULT_AVATARS
 }
 
-export function forceLoadAvatar (game, {avatar, avatarData}, setAsDefault = true) {
+export function forceLoadAvatar(
+  game,
+  {avatar, avatarData},
+  setAsDefault = true
+) {
   const key = spriteKey(avatar)
   game.load.spritesheet(key, avatarData, config.width, config.height)
   if (setAsDefault) {
@@ -44,9 +53,9 @@ export function forceLoadAvatar (game, {avatar, avatarData}, setAsDefault = true
   game.load.start()
 }
 
-export function preloadDataUrls (game, hiscoreObjs) {
+export function preloadDataUrls(game, hiscoreObjs) {
   const keys = []
-  hiscoreObjs.forEach(obj => {
+  hiscoreObjs.forEach((obj) => {
     if (!obj.avatar || !obj.avatarData) {
       return
     }
@@ -59,14 +68,14 @@ export function preloadDataUrls (game, hiscoreObjs) {
   return keys
 }
 
-export function AvatarPool (...keys) {
+export function AvatarPool(...keys) {
   const vals = [].concat(...keys)
   let pool = shuffle(uniq(vals))
   let pointer = 0
   const length = pool.length
 
   return {
-    allocate () {
+    allocate() {
       const key = pool[pointer]
       pointer++
       if (pointer >= length) {
